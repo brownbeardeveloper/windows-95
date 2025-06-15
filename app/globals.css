@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: "MS Sans Serif", sans-serif;
+    font-size: 11px;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+}
+
+@layer utilities {
+  .win95-button {
+    @apply bg-gray-300 border-2 border-white border-r-gray-400 border-b-gray-400 hover:bg-gray-200;
+  }
+
+  .win95-button:active {
+    @apply border-gray-400 border-r-white border-b-white;
+  }
+
+  .win95-inset {
+    @apply border-2 border-gray-400 border-r-white border-b-white;
+  }
+
+  .win95-outset {
+    @apply border-2 border-white border-r-gray-400 border-b-gray-400;
+  }
+}
