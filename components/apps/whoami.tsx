@@ -19,12 +19,12 @@ export default function WhoAmI() {
           {/* Header Section */}
           <div className="flex items-center space-x-4 pb-4 border-b-2 border-gray-300">
             <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center text-white text-2xl font-bold">
-              JD
+              DE
             </div>
             <div>
-              <h1 className="text-lg font-bold">John Developer</h1>
+              <h1 className="text-lg font-bold">Developer</h1>
               <p className="text-sm text-gray-600">Full Stack Developer</p>
-              <p className="text-xs text-gray-500">📍 San Francisco, CA</p>
+              <p className="text-xs text-gray-500">📍 Remote</p>
             </div>
           </div>
 
@@ -100,10 +100,10 @@ export default function WhoAmI() {
           <div className="space-y-2">
             <h2 className="text-sm font-bold border-b border-gray-300 pb-1">Contact Information</h2>
             <div className="text-xs space-y-1">
-              <p>📧 john.developer@email.com</p>
-              <p>🔗 linkedin.com/in/johndeveloper</p>
-              <p>🐙 github.com/johndeveloper</p>
-              <p>🌐 johndeveloper.dev</p>
+              <p>📧 developer@example.com</p>
+              <p>🔗 linkedin.com/in/developer</p>
+              <p>🐙 github.com/developer</p>
+              <p>🌐 developer.dev</p>
               <p>📱 +1 (555) 123-4567</p>
             </div>
           </div>

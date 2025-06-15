@@ -17,64 +17,112 @@ interface FileSystemItem {
 }
 
 export default function Terminal() {
+  // Function to detect browser and OS
+  const detectSystemInfo = () => {
+    if (typeof window === 'undefined') {
+      return { os: "Server", browser: "Unknown" };
+    }
+
+    const userAgent = navigator.userAgent;
+    const platform = navigator.platform;
+
+    // Detect OS
+    let osName = "Unknown";
+    if (platform.includes("Win")) {
+      osName = "Windows";
+    } else if (platform.includes("Mac")) {
+      osName = "macOS";
+    } else if (platform.includes("Linux")) {
+      osName = "Linux";
+    } else if (platform.includes("iPhone") || platform.includes("iPad")) {
+      osName = "iOS";
+    } else if (userAgent.includes("Android")) {
+      osName = "Android";
+    }
+
+    // Detect browser
+    let browserName = "Unknown";
+    if (userAgent.includes("Chrome") && !userAgent.includes("Edg")) {
+      browserName = "Google Chrome";
+    } else if (userAgent.includes("Firefox")) {
+      browserName = "Mozilla Firefox";
+    } else if (userAgent.includes("Safari") && !userAgent.includes("Chrome")) {
+      browserName = "Safari";
+    } else if (userAgent.includes("Edg")) {
+      browserName = "Microsoft Edge";
+    } else if (userAgent.includes("Opera") || userAgent.includes("OPR")) {
+      browserName = "Opera";
+    }
+
+    return { os: osName, browser: browserName };
+  };
+
+  const systemInfo = detectSystemInfo();
+
   const [history, setHistory] = useState<TerminalLine[]>([
     {
       type: "output",
       content: "Microsoft(R) MS-DOS Prompt",
     },
-    { type: "output", content: "Welcome to John's Portfolio MS-DOS Prompt!" },
+    { type: "output", content: "Welcome to the MS-DOS Prompt!" },
     { type: "output", content: "Type 'help' for available commands." },
     { type: "output", content: "" },
   ])
   const [currentInput, setCurrentInput] = useState("")
-  const [currentDirectory, setCurrentDirectory] = useState(["Portfolio"])
+  const [currentDirectory, setCurrentDirectory] = useState([systemInfo.os, systemInfo.browser])
   const [fileSystem, setFileSystem] = useState<{ [key: string]: FileSystemItem }>({
-    Portfolio: {
-      name: "Portfolio",
+    [systemInfo.os]: {
+      name: systemInfo.os,
       type: "directory",
       children: {
-        projects: {
-          name: "projects",
+        [systemInfo.browser]: {
+          name: systemInfo.browser,
           type: "directory",
           children: {
-            "ecommerce-platform": { name: "ecommerce-platform", type: "directory", children: {} },
-            "task-management-app": { name: "task-management-app", type: "directory", children: {} },
-            "weather-dashboard": { name: "weather-dashboard", type: "directory", children: {} },
-            "chat-application": { name: "chat-application", type: "directory", children: {} },
-          },
-        },
-        skills: {
-          name: "skills",
-          type: "directory",
-          children: {
-            "frontend.txt": { name: "frontend.txt", type: "file", content: "React, Vue.js, Angular, TypeScript" },
-            "backend.txt": { name: "backend.txt", type: "file", content: "Node.js, Python, PostgreSQL, MongoDB" },
-            "tools.txt": { name: "tools.txt", type: "file", content: "Git, Docker, AWS, Jest, Webpack" },
-          },
-        },
-        experience: {
-          name: "experience",
-          type: "directory",
-          children: {
-            "techcorp.txt": {
-              name: "techcorp.txt",
-              type: "file",
-              content: "Senior Full Stack Developer (2022-Present)",
+            projects: {
+              name: "projects",
+              type: "directory",
+              children: {
+                "ecommerce-platform": { name: "ecommerce-platform", type: "directory", children: {} },
+                "task-management-app": { name: "task-management-app", type: "directory", children: {} },
+                "weather-dashboard": { name: "weather-dashboard", type: "directory", children: {} },
+                "chat-application": { name: "chat-application", type: "directory", children: {} },
+              },
             },
-            "startupxyz.txt": { name: "startupxyz.txt", type: "file", content: "Frontend Developer (2020-2022)" },
-            "websolutions.txt": { name: "websolutions.txt", type: "file", content: "Junior Developer (2019-2020)" },
+            skills: {
+              name: "skills",
+              type: "directory",
+              children: {
+                "frontend.txt": { name: "frontend.txt", type: "file", content: "React, Vue.js, Angular, TypeScript" },
+                "backend.txt": { name: "backend.txt", type: "file", content: "Node.js, Python, PostgreSQL, MongoDB" },
+                "tools.txt": { name: "tools.txt", type: "file", content: "Git, Docker, AWS, Jest, Webpack" },
+              },
+            },
+            experience: {
+              name: "experience",
+              type: "directory",
+              children: {
+                "techcorp.txt": {
+                  name: "techcorp.txt",
+                  type: "file",
+                  content: "Senior Full Stack Developer (2022-Present)",
+                },
+                "startupxyz.txt": { name: "startupxyz.txt", type: "file", content: "Frontend Developer (2020-2022)" },
+                "websolutions.txt": { name: "websolutions.txt", type: "file", content: "Junior Developer (2019-2020)" },
+              },
+            },
+            "resume.pdf": { name: "resume.pdf", type: "file", content: "Developer's Resume - Full Stack Developer" },
+            "contact.txt": {
+              name: "contact.txt",
+              type: "file",
+              content: "Email: developer@example.com\nGitHub: github.com/developer",
+            },
+            "about.md": {
+              name: "about.md",
+              type: "file",
+              content: "# About Me\n\nPassionate full-stack developer with 5+ years of experience.",
+            },
           },
-        },
-        "resume.pdf": { name: "resume.pdf", type: "file", content: "John Developer's Resume - Full Stack Developer" },
-        "contact.txt": {
-          name: "contact.txt",
-          type: "file",
-          content: "Email: john.developer@email.com\nGitHub: github.com/johndeveloper",
-        },
-        "about.md": {
-          name: "about.md",
-          type: "file",
-          content: "# About Me\n\nPassionate full-stack developer with 5+ years of experience.",
         },
       },
     },
@@ -138,10 +186,10 @@ export default function Terminal() {
     ],
     pwd: () => [getCurrentPath()],
     whoami: () => [
-      "John Developer",
+      "Developer",
       "Full Stack Developer",
-      "Location: San Francisco, CA",
-      "Experience: 5+ years",
+      "Location: Remote",
+      "Experience: Multiple years",
       "Specialization: React, Node.js, Python",
     ],
     dir: () => {
@@ -222,10 +270,10 @@ export default function Terminal() {
     contact: () => [
       "Contact Information:",
       "",
-      "Email: john.developer@email.com",
-      "LinkedIn: linkedin.com/in/johndeveloper",
-      "GitHub: github.com/johndeveloper",
-      "Website: johndeveloper.dev",
+      "Email: developer@example.com",
+      "LinkedIn: linkedin.com/in/developer",
+      "GitHub: github.com/developer",
+      "Website: developer.dev",
       "Phone: +1 (555) 123-4567",
     ],
     experience: () => [
