@@ -1,7 +1,8 @@
-gi/** @type {import('next').NextConfig} */
+/** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'export',
   trailingSlash: true,
+  basePath: '/windows-95',
   images: {
     unoptimized: true,
   },
