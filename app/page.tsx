@@ -187,13 +187,30 @@ export default function Windows95() {
       {/* Taskbar */}
       <Taskbar
         onStartClick={() => setShowStartMenu(!showStartMenu)}
-        windows={windows}
+        windows={windows.map(w => ({
+          id: w.id,
+          title: w.title,
+          minimized: w.minimized,
+          zIndex: w.zIndex
+        }))}
         onWindowClick={(id) => {
           const window = windows.find((w) => w.id === id)
-          if (window?.minimized) {
+          if (!window) return
+
+          if (window.minimized) {
+            // If window is minimized, restore it
             restoreWindow(id)
           } else {
-            focusWindow(id)
+            // If window is not minimized, check if it's the currently focused window
+            const isCurrentlyFocused = window.zIndex === Math.max(...windows.map(w => w.zIndex))
+
+            if (isCurrentlyFocused) {
+              // If it's already focused, minimize it
+              minimizeWindow(id)
+            } else {
+              // If it's not focused, bring it to front
+              focusWindow(id)
+            }
           }
         }}
       />
