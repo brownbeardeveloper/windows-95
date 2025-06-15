@@ -12,8 +12,6 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  // If your repo name is not your domain, add basePath
-  // basePath: '/your-repo-name',
 }
 
 export default nextConfig

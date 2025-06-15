@@ -23,8 +23,8 @@ export const APPS: Record<string, AppDefinition> = {
         title: 'Projects',
         component: 'projects',
         icon: '📁',
-        width: 600,
-        height: 400,
+        width: 800,
+        height: 550,
         category: 'project'
     },
     'whoami': {
@@ -49,20 +49,12 @@ export const APPS: Record<string, AppDefinition> = {
         id: 'recycle-bin',
         title: 'Recycle Bin',
         component: 'recycle-bin',
-        icon: '🗑️',
+        icon: '🗂️',
         width: 400,
         height: 300,
         category: 'system'
     },
-    'control-panel': {
-        id: 'control-panel',
-        title: 'Control Panel',
-        component: 'control-panel',
-        icon: '⚙️',
-        width: 426,
-        height: 320,
-        category: 'system'
-    },
+
     'contact': {
         id: 'contact',
         title: 'Contact',

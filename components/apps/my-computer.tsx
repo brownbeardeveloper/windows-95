@@ -8,7 +8,6 @@ export default function MyComputer() {
   ]
 
   const folders = [
-    { name: "Control Panel", icon: "⚙️" },
     { name: "Printers", icon: "🖨️" },
     { name: "Dial-Up Networking", icon: "📞" },
   ]

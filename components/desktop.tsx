@@ -6,9 +6,10 @@ interface DesktopProps {
   onDoubleClick: () => void
   onOpenWindow: (title: string, component: string, width?: number, height?: number) => void
   recycleBinHasItems: boolean
+  recycleBinCount?: number
 }
 
-export default function Desktop({ onDoubleClick, onOpenWindow, recycleBinHasItems }: DesktopProps) {
+export default function Desktop({ onDoubleClick, onOpenWindow, recycleBinHasItems, recycleBinCount = 0 }: DesktopProps) {
   // Define which apps appear on desktop
   const desktopApps = [
     'my-computer',
@@ -41,11 +42,11 @@ export default function Desktop({ onDoubleClick, onOpenWindow, recycleBinHasItem
               }}
             >
               <div className="w-8 h-8 md:w-8 md:h-8 w-10 h-10 flex items-center justify-center text-2xl md:text-2xl text-3xl mb-1">
-                {app.icon}
+                {appId === 'recycle-bin' ? (recycleBinHasItems ? '🗑️' : '🗑️') : app.icon}
               </div>
               <span className="text-white text-xs md:text-xs text-sm text-center leading-tight">
                 {appId === 'recycle-bin' && recycleBinHasItems
-                  ? `${app.title} (${23})`
+                  ? `${app.title} (${recycleBinCount})`
                   : app.title
                 }
               </span>

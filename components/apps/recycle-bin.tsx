@@ -1,16 +1,10 @@
 "use client"
 
 import { useState } from 'react'
-
-interface RecycleBinItem {
-  name: string
-  icon: string
-  dateDeleted: string
-  originalLocation: string
-}
+import { BinItem } from '@/lib/bin-data'
 
 interface RecycleBinProps {
-  items?: RecycleBinItem[]
+  items?: BinItem[]
   onEmptyBin?: () => void
   onRestoreItems?: (indices: number[]) => void
   onDeleteItems?: (indices: number[]) => void

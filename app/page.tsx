@@ -5,31 +5,41 @@ import Desktop from "@/components/desktop"
 import Taskbar from "@/components/taskbar"
 import StartMenu from "@/components/start-menu"
 import Window from "@/components/window"
-import ControlPanel from "@/components/apps/control-panel"
+
 import MyComputer from "@/components/apps/my-computer"
 import Projects from "@/components/apps/projects"
 import WhoAmI from "@/components/apps/whoami"
 import Terminal from "@/components/apps/terminal"
 import RecycleBin from "@/components/apps/recycle-bin"
 import { getApp } from "@/lib/apps"
+import { useRecycleBin } from "@/hooks/use-recycle-bin"
+
+interface WindowType {
+  id: string
+  title: string
+  component: string
+  x: number
+  y: number
+  width: number
+  height: number
+  minimized: boolean
+  zIndex: number
+}
 
 export default function Windows95() {
-  const [showStartMenu, setShowStartMenu] = useState(true)
-  const [windows, setWindows] = useState([
-    {
-      id: "control-panel",
-      title: "Control Panel",
-      component: "control-panel",
-      x: 213,
-      y: 26,
-      width: 426,
-      height: 320,
-      minimized: false,
-      zIndex: 1,
-    },
-  ])
+  const [showStartMenu, setShowStartMenu] = useState(false)
+  const [windows, setWindows] = useState<WindowType[]>([])
   const [nextZIndex, setNextZIndex] = useState(2)
   const [isMobile, setIsMobile] = useState(false)
+
+  // Recycle Bin hook
+  const {
+    recycleBinItems,
+    emptyRecycleBin,
+    restoreItems,
+    deleteItems,
+    hasItems
+  } = useRecycleBin()
 
   // Check if device is mobile
   useEffect(() => {
@@ -42,49 +52,7 @@ export default function Windows95() {
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
-  // Recycle Bin state - in real Windows 95 this would be persistent
-  const [recycleBinItems, setRecycleBinItems] = useState([
-    { name: "Old Document.txt", icon: "📄", dateDeleted: "12/15/2023", originalLocation: "C:\\My Documents" },
-    { name: "Photo.bmp", icon: "🖼️", dateDeleted: "12/14/2023", originalLocation: "C:\\My Documents\\Pictures" },
-    { name: "Program Files", icon: "📁", dateDeleted: "12/13/2023", originalLocation: "C:\\Program Files\\OldApp" },
-    // Add more items to show it's not empty
-    ...Array.from({ length: 20 }, (_, i) => ({
-      name: `Test File ${i + 4}.txt`,
-      icon: "📄",
-      dateDeleted: "12/12/2023",
-      originalLocation: `C:\\Test\\Folder${i + 1}`,
-    })),
-  ])
 
-  // Recycle Bin operations
-  const handleEmptyRecycleBin = () => {
-    setRecycleBinItems([])
-  }
-
-  const handleRestoreItems = (indices: number[]) => {
-    setRecycleBinItems(prev =>
-      prev.filter((_, index) => !indices.includes(index))
-    )
-
-    // In a real app, you'd restore the files to their original locations
-    // For now, we just show a notification
-    const restoredCount = indices.length
-    setTimeout(() => {
-      alert(`${restoredCount} item(s) have been restored to their original locations.`)
-    }, 100)
-  }
-
-  const handleDeleteItems = (indices: number[]) => {
-    setRecycleBinItems(prev =>
-      prev.filter((_, index) => !indices.includes(index))
-    )
-
-    // In a real app, these would be permanently deleted
-    const deletedCount = indices.length
-    setTimeout(() => {
-      alert(`${deletedCount} item(s) have been permanently deleted.`)
-    }, 100)
-  }
 
   const openWindow = (title: string, component: string, width = 400, height = 300) => {
     // Responsive window sizing and positioning
@@ -153,8 +121,6 @@ export default function Windows95() {
 
   const renderWindowContent = (component: string) => {
     switch (component) {
-      case "control-panel":
-        return <ControlPanel />
       case "my-computer":
         return <MyComputer />
       case "projects":
@@ -167,9 +133,9 @@ export default function Windows95() {
         return (
           <RecycleBin
             items={recycleBinItems}
-            onEmptyBin={handleEmptyRecycleBin}
-            onRestoreItems={handleRestoreItems}
-            onDeleteItems={handleDeleteItems}
+            onEmptyBin={emptyRecycleBin}
+            onRestoreItems={restoreItems}
+            onDeleteItems={deleteItems}
           />
         )
       default:
@@ -182,7 +148,8 @@ export default function Windows95() {
       <Desktop
         onDoubleClick={() => setShowStartMenu(false)}
         onOpenWindow={openWindow}
-        recycleBinHasItems={recycleBinItems.length > 0}
+        recycleBinHasItems={hasItems}
+        recycleBinCount={recycleBinItems.length}
       />
 
       {/* Windows */}
