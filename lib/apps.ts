@@ -29,7 +29,7 @@ export const APPS: Record<string, AppDefinition> = {
     },
     'whoami': {
         id: 'whoami',
-        title: 'whoami',
+        title: 'About Me',
         component: 'whoami',
         icon: '👤',
         width: 480,

@@ -57,7 +57,7 @@ export default function StartMenu({ onClose, onOpenApp }: StartMenuProps) {
                   <span className="text-base md:text-xs">{APPS['projects'].icon}</span>
                 </div>
               </div>
-              <span><span className="underline">P</span>rojects</span>
+              <span><span className="underline">U</span>ser Folder</span>
             </div>
             <span>▶</span>
           </button>
