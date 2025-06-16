@@ -49,7 +49,7 @@ export const APPS: Record<string, AppDefinition> = {
         id: 'recycle-bin',
         title: 'Recycle Bin',
         component: 'recycle-bin',
-        icon: '🗂️',
+        icon: '🗑️',
         width: 400,
         height: 300,
         category: 'system'

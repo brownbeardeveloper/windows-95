@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { APPS } from "@/lib/apps"
+import { SYSTEM_ICONS } from "@/lib/system-icons"
 
 interface StartMenuProps {
   onClose: () => void
@@ -71,7 +72,7 @@ export default function StartMenu({ onClose, onOpenApp }: StartMenuProps) {
             <div className="flex items-center space-x-4 md:space-x-3">
               <div className="w-10 h-10 md:w-8 md:h-8 flex items-center justify-center">
                 <div className="w-8 h-8 md:w-6 md:h-6 bg-gray-400 border border-gray-600 flex items-center justify-center">
-                  <span className="text-base md:text-xs">📋</span>
+                  <span className="text-base md:text-xs">{SYSTEM_ICONS.PROGRAMS_FOLDER}</span>
                 </div>
               </div>
               <span><span className="underline">P</span>rogram</span>
@@ -127,7 +128,7 @@ export default function StartMenu({ onClose, onOpenApp }: StartMenuProps) {
             <div className="flex items-center space-x-4 md:space-x-3">
               <div className="w-10 h-10 md:w-8 md:h-8 flex items-center justify-center">
                 <div className="w-8 h-8 md:w-6 md:h-6 bg-blue-800 border border-gray-600 flex items-center justify-center">
-                  <span className="text-white text-base md:text-xs">⏻</span>
+                  <span className="text-white text-base md:text-xs">{SYSTEM_ICONS.SHUTDOWN}</span>
                 </div>
               </div>
               <span><span className="underline">S</span>hut Down</span>

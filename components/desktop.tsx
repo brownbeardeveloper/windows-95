@@ -48,7 +48,7 @@ export default function Desktop({ onDoubleClick, onClick, onOpenWindow, recycleB
               }}
             >
               <div className="w-8 h-8 md:w-8 md:h-8 w-10 h-10 flex items-center justify-center text-2xl md:text-2xl text-3xl mb-1">
-                {appId === 'recycle-bin' ? (recycleBinHasItems ? '🗑️' : '🗑️') : app.icon}
+                {app.icon}
               </div>
               <span className="text-white text-xs md:text-xs text-sm text-center leading-tight">
                 {appId === 'recycle-bin' && recycleBinHasItems

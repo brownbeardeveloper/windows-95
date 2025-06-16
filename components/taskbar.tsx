@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { SYSTEM_ICONS } from "@/lib/system-icons"
 
 interface TaskbarProps {
   onStartClick: () => void
@@ -48,7 +49,12 @@ export default function Taskbar({ onStartClick, showStartMenu, windows, onWindow
           : "border-white border-r-gray-400 border-b-gray-400 hover:bg-gray-200 active:border-gray-400 active:border-r-white active:border-b-white"
           }`}
       >
-        <div className="w-5 h-5 md:w-4 md:h-4 bg-red-500 flex items-center justify-center text-white text-sm md:text-xs font-bold">⊞</div>
+        <div className="w-5 h-5 md:w-4 md:h-4 grid grid-cols-2 gap-px">
+          <div className="bg-red-500"></div>
+          <div className="bg-green-500"></div>
+          <div className="bg-blue-500"></div>
+          <div className="bg-yellow-500"></div>
+        </div>
         <span className="text-sm md:text-xs font-bold">Start</span>
       </button>
 
@@ -87,7 +93,7 @@ export default function Taskbar({ onStartClick, showStartMenu, windows, onWindow
 
       {/* System Tray */}
       <div className="flex items-center space-x-2 mr-1 md:mr-2">
-        <div className="w-6 h-6 md:w-5 md:h-5 bg-gray-400 border border-gray-500 flex items-center justify-center text-sm md:text-xs touch-manipulation">🔊</div>
+        <div className="w-6 h-6 md:w-5 md:h-5 bg-gray-400 border border-gray-500 flex items-center justify-center text-sm md:text-xs touch-manipulation">{SYSTEM_ICONS.VOLUME}</div>
         <div className="text-sm md:text-xs bg-gray-200 border border-gray-400 px-2 py-1 md:py-0.5 whitespace-nowrap">{currentTime}</div>
       </div>
     </div>

@@ -1,15 +1,17 @@
 "use client"
 
+import { SYSTEM_ICONS } from "@/lib/system-icons"
+
 export default function MyComputer() {
   const drives = [
-    { name: "3½ Floppy (A:)", icon: "💾", type: "floppy" },
-    { name: "Local Disk (C:)", icon: "💿", type: "hard-drive", space: "2.1 GB free of 4.2 GB" },
-    { name: "CD-ROM (D:)", icon: "💿", type: "cd-rom" },
+    { name: "3½ Floppy (A:)", icon: SYSTEM_ICONS.FLOPPY, type: "floppy" },
+    { name: "Local Disk (C:)", icon: SYSTEM_ICONS.CDROM, type: "hard-drive", space: "2.1 GB free of 4.2 GB" },
+    { name: "CD-ROM (D:)", icon: SYSTEM_ICONS.CDROM, type: "cd-rom" },
   ]
 
   const folders = [
-    { name: "Printers", icon: "🖨️" },
-    { name: "Dial-Up Networking", icon: "📞" },
+    { name: "Printers", icon: SYSTEM_ICONS.PRINTER },
+    { name: "Dial-Up Networking", icon: SYSTEM_ICONS.NETWORK },
   ]
 
   return (
@@ -64,7 +66,7 @@ export default function MyComputer() {
               key={`extra-${i}`}
               className="flex flex-col items-center cursor-pointer hover:bg-blue-600 hover:bg-opacity-20 p-2 rounded"
             >
-              <div className="w-10 h-10 flex items-center justify-center text-2xl mb-2">📁</div>
+              <div className="w-10 h-10 flex items-center justify-center text-2xl mb-2">{SYSTEM_ICONS.FOLDER}</div>
               <span className="text-xs text-center leading-tight">Folder {i + 1}</span>
             </div>
           ))}

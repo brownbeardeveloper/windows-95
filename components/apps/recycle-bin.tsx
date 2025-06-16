@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { BinItem } from '@/lib/bin-data'
+import { APPS } from '@/lib/apps'
 
 interface RecycleBinProps {
   items?: BinItem[]
@@ -175,7 +176,7 @@ export default function RecycleBin({
       <div className="flex-1 overflow-auto bg-white border-2 border-gray-500 border-t-gray-400 border-l-gray-400 m-2">
         {deletedItems.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-32 text-gray-500 p-4">
-            <div className="text-4xl mb-2">🗑️</div>
+            <div className="text-4xl mb-2">{APPS['recycle-bin'].icon}</div>
             <span className="text-sm font-sans">Recycle Bin is empty</span>
             <span className="text-xs font-sans mt-1 text-gray-400">
               Items you delete will be moved here until you empty the Recycle Bin.
