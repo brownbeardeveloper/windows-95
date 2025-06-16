@@ -119,9 +119,9 @@ export default function Window({
         <div className="flex space-x-1">
           <button
             onClick={onMinimize}
-            className="w-6 h-4 md:w-4 md:h-3 bg-gray-300 border border-gray-400 text-black text-sm md:text-xs flex items-center justify-center hover:bg-gray-200 touch-manipulation"
+            className="w-6 h-4 md:w-4 md:h-3 bg-gray-300 border border-gray-400 text-black text-base md:text-sm flex items-center justify-center hover:bg-gray-200 touch-manipulation font-black"
           >
-            _
+            –
           </button>
           <button
             onClick={onClose}

@@ -29,7 +29,7 @@ interface WindowType {
   projectData?: any // For storing project data when opening project details
 }
 
-export default function Windows95() {
+export default function RetroDesktop() {
   const [showStartMenu, setShowStartMenu] = useState(false)
   const [windows, setWindows] = useState<WindowType[]>([])
   const [nextZIndex, setNextZIndex] = useState(1)

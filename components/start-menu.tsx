@@ -43,10 +43,10 @@ export default function StartMenu({ onClose, onOpenApp }: StartMenuProps) {
     <div className="absolute bottom-10 md:bottom-7 left-0 flex bg-gray-300 border-2 border-white border-r-gray-500 border-b-gray-500 shadow-lg font-sans z-[9999]">
       {/* Vertical Windows 95 Sidebar */}
       <div className="bg-gradient-to-b from-gray-400 to-gray-500 w-10 md:w-8 relative min-h-full overflow-hidden">
-        <div className="absolute top-12 left-1/2 transform -translate-x-1/2">
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
           <div className="transform -rotate-90 origin-center">
-            <span className="text-white font-bold text-sm md:text-xs whitespace-nowrap tracking-wider">
-              Windows 95
+            <span className="text-white font-bold text-lg md:text-base whitespace-nowrap tracking-wider">
+              Home
             </span>
           </div>
         </div>

@@ -6,12 +6,12 @@ export interface BinItem {
 }
 
 export const DEFAULT_BIN_ITEMS: BinItem[] = [
-    // Classic Windows 95 programs and files
+    // Classic retro programs and files
     {
-        name: "WINWORD.EXE",
+        name: "TEXTAPP.EXE",
         icon: "📝",
         dateDeleted: "08/24/1995",
-        originalLocation: "C:\\MSOFFICE\\WINWORD"
+        originalLocation: "C:\\OFFICE\\TEXTAPP"
     },
     {
         name: "AUTOEXEC.BAT",
@@ -38,10 +38,10 @@ export const DEFAULT_BIN_ITEMS: BinItem[] = [
         originalLocation: "C:\\WINDOWS"
     },
     {
-        name: "MINESWEEPER.EXE",
+        name: "MINEFIELD.EXE",
         icon: "💣",
         dateDeleted: "10/03/1995",
-        originalLocation: "C:\\WINDOWS"
+        originalLocation: "C:\\SYSTEM"
     },
     {
         name: "DOOM.WAD",
@@ -50,10 +50,10 @@ export const DEFAULT_BIN_ITEMS: BinItem[] = [
         originalLocation: "C:\\GAMES\\DOOM"
     },
     {
-        name: "BUDGET95.XLS",
+        name: "BUDGET95.SHT",
         icon: "📊",
         dateDeleted: "06/30/1995",
-        originalLocation: "C:\\EXCEL\\DOCS"
+        originalLocation: "C:\\SHEETS\\DOCS"
     },
     {
         name: "FAMILY PHOTO.BMP",
@@ -62,10 +62,10 @@ export const DEFAULT_BIN_ITEMS: BinItem[] = [
         originalLocation: "C:\\WINDOWS\\DESKTOP"
     },
     {
-        name: "NETSCAPE.EXE",
+        name: "BROWSER.EXE",
         icon: "🌐",
         dateDeleted: "01/10/1996",
-        originalLocation: "C:\\NETSCAPE"
+        originalLocation: "C:\\INTERNET"
     },
     {
         name: "NAPSTER.EXE",

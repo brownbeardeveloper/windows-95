@@ -50,12 +50,12 @@ export default function Taskbar({ onStartClick, showStartMenu, windows, onWindow
           }`}
       >
         <div className="w-5 h-5 md:w-4 md:h-4 grid grid-cols-2 gap-px">
-          <div className="bg-red-500"></div>
-          <div className="bg-green-500"></div>
-          <div className="bg-blue-500"></div>
-          <div className="bg-yellow-500"></div>
+          <div style={{ backgroundColor: '#8B5CF6' }}></div>
+          <div style={{ backgroundColor: '#4A90E2' }}></div>
+          <div style={{ backgroundColor: '#7ED6C1' }}></div>
+          <div style={{ backgroundColor: '#F7C948' }}></div>
         </div>
-        <span className="text-sm md:text-xs font-bold">Start</span>
+        <span className="text-sm md:text-xs font-bold">Enter</span>
       </button>
 
       {/* Window Buttons */}

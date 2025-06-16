@@ -38,9 +38,9 @@ export const APPS: Record<string, AppDefinition> = {
     },
     'terminal': {
         id: 'terminal',
-        title: 'MS-DOS Prompt',
+        title: 'Terminal',
         component: 'terminal',
-        icon: '⬛',
+        icon: '🖥',
         width: 600,
         height: 400,
         category: 'system'
@@ -50,7 +50,7 @@ export const APPS: Record<string, AppDefinition> = {
         title: 'Recycle Bin',
         component: 'recycle-bin',
         icon: '🗑️',
-        width: 400,
+        width: 500,
         height: 300,
         category: 'system'
     },

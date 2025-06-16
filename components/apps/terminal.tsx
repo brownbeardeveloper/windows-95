@@ -62,14 +62,22 @@ export default function Terminal() {
   const [history, setHistory] = useState<TerminalLine[]>([
     {
       type: "output",
-      content: "Microsoft(R) MS-DOS Prompt",
+      content: "Terminal v1.0.0",
     },
-    { type: "output", content: "Welcome to the MS-DOS Prompt!" },
+    { type: "output", content: "Welcome to the Terminal!" },
     { type: "output", content: "Type 'help' for available commands." },
     { type: "output", content: "" },
   ])
   const [currentInput, setCurrentInput] = useState("")
   const [currentDirectory, setCurrentDirectory] = useState([systemInfo.os, systemInfo.browser])
+  const [commandHistory, setCommandHistory] = useState<string[]>([])
+  const [historyIndex, setHistoryIndex] = useState(-1)
+  const [vimMode, setVimMode] = useState(false)
+  const [vimFile, setVimFile] = useState<{ name: string; content: string } | null>(null)
+  const [vimCursor, setVimCursor] = useState({ line: 0, col: 0 })
+  const [vimLines, setVimLines] = useState<string[]>([])
+  const [vimStatus, setVimStatus] = useState("-- INSERT --")
+  const [vimCommand, setVimCommand] = useState("")
   const [fileSystem, setFileSystem] = useState<{ [key: string]: FileSystemItem }>({
     [systemInfo.os]: {
       name: systemInfo.os,
@@ -175,12 +183,13 @@ export default function Terminal() {
       "  rm <file>     - Remove file",
       "  rmdir <dir>   - Remove directory",
       "  cat <file>    - Display file contents",
+      "  vim <file>    - View/edit file contents",
       "  echo <text>   - Display text or write to file",
       "  skills        - Show technical skills",
       "  projects      - List all projects",
       "  contact       - Show contact information",
       "  experience    - Display work experience",
-      "  clear         - Clear MS-DOS screen",
+      "  clear         - Clear terminal screen",
       "  date          - Show current date and time",
       "  tree          - Show directory structure",
     ],
@@ -330,8 +339,16 @@ export default function Terminal() {
     const [command, ...args] = trimmedCmd.split(" ")
     const lowerCommand = command.toLowerCase()
 
-    // Add command to history
+    // Add command to terminal history display
     setHistory((prev) => [...prev, { type: "command", content: `${getCurrentPrompt()} ${cmd}` }])
+
+    // Add command to command history for navigation (only if not empty and not duplicate)
+    if (trimmedCmd && (commandHistory.length === 0 || commandHistory[commandHistory.length - 1] !== trimmedCmd)) {
+      setCommandHistory((prev) => [...prev, trimmedCmd])
+    }
+
+    // Reset history index
+    setHistoryIndex(-1)
 
     if (lowerCommand === "clear") {
       setHistory([])
@@ -517,6 +534,55 @@ export default function Terminal() {
       return
     }
 
+    // VIM command
+    if (lowerCommand === "vim") {
+      const fileName = args[0]
+      if (!fileName) {
+        addOutput(["Usage: vim <filename>"], "error")
+        return
+      }
+
+      const currentDir = getCurrentDirectoryObject()
+      let file = currentDir?.children?.[fileName]
+
+      if (!file) {
+        // Create the file if it doesn't exist
+        setFileSystem((prev) => {
+          const newFS = JSON.parse(JSON.stringify(prev))
+          let current = newFS[currentDirectory[0]]
+          for (let i = 1; i < currentDirectory.length; i++) {
+            current = current.children[currentDirectory[i]]
+          }
+          current.children[fileName] = {
+            name: fileName,
+            type: "file",
+            content: "",
+          }
+          return newFS
+        })
+        file = { name: fileName, type: "file", content: "" }
+      }
+
+      if (file && file.type === "directory") {
+        addOutput([`${fileName} is a directory.`], "error")
+        return
+      }
+
+      // Get the most up-to-date file content
+      const updatedDir = getCurrentDirectoryObject()
+      const updatedFile = updatedDir?.children?.[fileName]
+      const content = updatedFile?.content || ""
+      const lines = content.split("\n")
+
+      // Enter vim mode
+      setVimMode(true)
+      setVimFile({ name: fileName, content })
+      setVimLines(lines.length === 1 && lines[0] === "" ? [""] : lines)
+      setVimCursor({ line: 0, col: 0 })
+      setVimStatus("-- INSERT --")
+      return
+    }
+
     // ECHO command
     if (lowerCommand === "echo") {
       const text = args.join(" ")
@@ -534,7 +600,151 @@ export default function Terminal() {
     }
   }
 
+  const saveVimFile = () => {
+    if (!vimFile) return
+
+    const content = vimLines.join("\n")
+    setFileSystem((prev) => {
+      const newFS = JSON.parse(JSON.stringify(prev))
+      let current = newFS[currentDirectory[0]]
+      for (let i = 1; i < currentDirectory.length; i++) {
+        current = current.children[currentDirectory[i]]
+      }
+      if (current.children[vimFile.name]) {
+        current.children[vimFile.name].content = content
+      }
+      return newFS
+    })
+  }
+
+  const exitVim = () => {
+    setVimMode(false)
+    setVimFile(null)
+    setVimLines([])
+    setVimCursor({ line: 0, col: 0 })
+    setVimStatus("-- INSERT --")
+    setVimCommand("")
+  }
+
+  const handleVimKeyPress = (e: React.KeyboardEvent) => {
+    e.preventDefault()
+
+    if (e.key === "Escape") {
+      setVimStatus("-- COMMAND --")
+      setVimCommand("")
+      return
+    }
+
+    if (vimStatus === "-- COMMAND --") {
+      if (e.key === "i") {
+        setVimStatus("-- INSERT --")
+        return
+      }
+      if (e.key === ":") {
+        setVimCommand(":")
+        setVimStatus("-- COMMAND LINE --")
+        return
+      }
+      return
+    }
+
+    if (vimCommand.startsWith(":")) {
+      if (e.key === "Enter") {
+        const cmd = vimCommand.slice(1) // Remove the ":"
+        if (cmd === "q") {
+          // Quit
+          exitVim()
+          return
+        } else if (cmd === "w") {
+          // Save
+          saveVimFile()
+          setVimStatus("File saved!")
+          setTimeout(() => setVimStatus("-- COMMAND --"), 1000)
+          setVimCommand("")
+          return
+        } else if (cmd === "wq") {
+          // Save and quit
+          saveVimFile()
+          exitVim()
+          return
+        }
+        setVimCommand("")
+        setVimStatus("-- COMMAND --")
+        return
+      } else if (e.key === "Backspace") {
+        if (vimCommand.length > 1) {
+          setVimCommand(vimCommand.slice(0, -1))
+        } else {
+          setVimCommand("")
+          setVimStatus("-- COMMAND --")
+        }
+        return
+      } else if (e.key === "Escape") {
+        setVimCommand("")
+        setVimStatus("-- COMMAND --")
+        return
+      } else if (e.key.length === 1 && !e.ctrlKey && !e.altKey) {
+        const newCommand = vimCommand + e.key
+        if (newCommand.length <= 3) { // : + max 2 characters
+          setVimCommand(newCommand)
+        } else {
+          // Clear command if it gets too long
+          setVimCommand("")
+          setVimStatus("-- COMMAND --")
+        }
+        return
+      }
+      return
+    }
+
+    // INSERT mode
+    const { line, col } = vimCursor
+    const currentLine = vimLines[line] || ""
+
+    if (e.key === "Enter") {
+      const newLines = [...vimLines]
+      const beforeCursor = currentLine.slice(0, col)
+      const afterCursor = currentLine.slice(col)
+      newLines[line] = beforeCursor
+      newLines.splice(line + 1, 0, afterCursor)
+      setVimLines(newLines)
+      setVimCursor({ line: line + 1, col: 0 })
+    } else if (e.key === "Backspace") {
+      if (col > 0) {
+        const newLines = [...vimLines]
+        newLines[line] = currentLine.slice(0, col - 1) + currentLine.slice(col)
+        setVimLines(newLines)
+        setVimCursor({ line, col: col - 1 })
+      } else if (line > 0) {
+        const newLines = [...vimLines]
+        const prevLine = newLines[line - 1]
+        newLines[line - 1] = prevLine + currentLine
+        newLines.splice(line, 1)
+        setVimLines(newLines)
+        setVimCursor({ line: line - 1, col: prevLine.length })
+      }
+    } else if (e.key === "ArrowUp" && line > 0) {
+      setVimCursor({ line: line - 1, col: Math.min(col, vimLines[line - 1]?.length || 0) })
+    } else if (e.key === "ArrowDown" && line < vimLines.length - 1) {
+      setVimCursor({ line: line + 1, col: Math.min(col, vimLines[line + 1]?.length || 0) })
+    } else if (e.key === "ArrowLeft" && col > 0) {
+      setVimCursor({ line, col: col - 1 })
+    } else if (e.key === "ArrowRight" && col < currentLine.length) {
+      setVimCursor({ line, col: col + 1 })
+    } else if (e.key.length === 1 && !e.ctrlKey && !e.altKey) {
+      const newLines = [...vimLines]
+      newLines[line] = currentLine.slice(0, col) + e.key + currentLine.slice(col)
+      setVimLines(newLines)
+      setVimCursor({ line, col: col + 1 })
+    }
+  }
+
   const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (vimMode) {
+      handleVimKeyPress(e)
+      return
+    }
+
     if (e.key === "Enter") {
       if (currentInput.trim()) {
         executeCommand(currentInput)
@@ -542,6 +752,25 @@ export default function Terminal() {
         setHistory((prev) => [...prev, { type: "command", content: getCurrentPrompt() }])
       }
       setCurrentInput("")
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault()
+      if (commandHistory.length > 0) {
+        const newIndex = historyIndex === -1 ? commandHistory.length - 1 : Math.max(0, historyIndex - 1)
+        setHistoryIndex(newIndex)
+        setCurrentInput(commandHistory[newIndex])
+      }
+    } else if (e.key === "ArrowDown") {
+      e.preventDefault()
+      if (commandHistory.length > 0 && historyIndex !== -1) {
+        const newIndex = historyIndex + 1
+        if (newIndex >= commandHistory.length) {
+          setHistoryIndex(-1)
+          setCurrentInput("")
+        } else {
+          setHistoryIndex(newIndex)
+          setCurrentInput(commandHistory[newIndex])
+        }
+      }
     }
   }
 
@@ -556,6 +785,75 @@ export default function Terminal() {
       inputRef.current.focus()
     }
   }, [])
+
+  if (vimMode && vimFile) {
+    return (
+      <div className="h-full bg-black text-white flex flex-col font-mono text-sm">
+        {/* Vim Header */}
+        <div className="px-2 py-1 bg-gray-800 text-center">
+          <span className="text-green-400">VIM</span> - {vimFile.name} - {vimLines.length} lines
+        </div>
+
+        {/* Vim Content */}
+        <div className="flex-1 p-2 overflow-auto">
+          {vimLines.map((line, lineIndex) => (
+            <div key={lineIndex} className="flex">
+              <span className="text-gray-500 w-8 text-right pr-2">{lineIndex + 1}</span>
+              <div className="flex-1 relative">
+                {line.split('').map((char, charIndex) => (
+                  <span
+                    key={charIndex}
+                    className={
+                      vimCursor.line === lineIndex && vimCursor.col === charIndex
+                        ? "bg-white text-black"
+                        : ""
+                    }
+                  >
+                    {char}
+                  </span>
+                ))}
+                {vimCursor.line === lineIndex && vimCursor.col === line.length && (
+                  <span className="bg-white text-black">_</span>
+                )}
+                {line.length === 0 && vimCursor.line === lineIndex && (
+                  <span className="bg-white text-black">_</span>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Vim Status Bar */}
+        <div className="px-2 py-1 bg-gray-800 flex justify-between">
+          <div className="flex flex-col">
+            <div className="text-gray-400 text-xs">
+              Line {vimCursor.line + 1}, Col {vimCursor.col + 1} | Esc - Command | i - Insert
+            </div>
+            <div className="text-gray-400 text-xs">
+              :w - Save | :q - Quit | :wq - Save & Quit
+            </div>
+          </div>
+          <div className="flex items-center space-x-2">
+            <span className="text-yellow-400">{vimStatus}</span>
+            {vimCommand && (
+              <span className="text-white">
+                {vimCommand.length <= 3 ? vimCommand : vimCommand.slice(0, 3)}
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Hidden input to capture keystrokes */}
+        <input
+          ref={inputRef}
+          type="text"
+          className="absolute opacity-0 pointer-events-none"
+          onKeyDown={handleKeyPress}
+          autoFocus
+        />
+      </div>
+    )
+  }
 
   return (
     <div className="h-full bg-black text-white flex flex-col font-mono text-sm">
@@ -579,7 +877,7 @@ export default function Terminal() {
             type="text"
             value={currentInput}
             onChange={(e) => setCurrentInput(e.target.value)}
-            onKeyPress={handleKeyPress}
+            onKeyDown={handleKeyPress}
             className="flex-1 bg-transparent text-white outline-none border-none"
             style={{ caretColor: "white" }}
           />

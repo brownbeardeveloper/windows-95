@@ -7,11 +7,11 @@ export default function AboutDialog() {
         </div>
       </div>
 
-      <h2 className="text-lg font-bold mb-2">Microsoft Windows 95</h2>
+      <h2 className="text-lg font-bold mb-2">Retro Desktop</h2>
       <p className="text-sm text-gray-600 mb-4">
-        Version 4.00.950
+        Version 1.0.0
         <br />
-        Copyright © 1981-1995 Microsoft Corp.
+        Open Source Project
       </p>
 
       <div className="text-xs text-gray-500 mb-4">
@@ -22,7 +22,7 @@ export default function AboutDialog() {
 
       <div className="border-t border-gray-400 pt-4 text-xs text-gray-500">
         Built with React & Next.js
-        <br />A nostalgic recreation of Windows 95
+        <br />A nostalgic recreation of classic desktop
       </div>
 
       <div className="mt-4">
