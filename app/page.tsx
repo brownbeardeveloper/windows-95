@@ -8,6 +8,7 @@ import Window from "@/components/window"
 
 import MyComputer from "@/components/apps/my-computer"
 import Projects from "@/components/apps/projects"
+import ProjectDetails from "@/components/apps/project-details"
 import WhoAmI from "@/components/apps/whoami"
 import Terminal from "@/components/apps/terminal"
 import RecycleBin from "@/components/apps/recycle-bin"
@@ -24,12 +25,13 @@ interface WindowType {
   height: number
   minimized: boolean
   zIndex: number
+  projectData?: any // For storing project data when opening project details
 }
 
 export default function Windows95() {
   const [showStartMenu, setShowStartMenu] = useState(false)
   const [windows, setWindows] = useState<WindowType[]>([])
-  const [nextZIndex, setNextZIndex] = useState(2)
+  const [nextZIndex, setNextZIndex] = useState(1)
   const [isMobile, setIsMobile] = useState(false)
 
   // Recycle Bin hook
@@ -52,9 +54,7 @@ export default function Windows95() {
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
-
-
-  const openWindow = (title: string, component: string, width = 400, height = 300) => {
+  const openWindow = (title: string, component: string, width = 400, height = 300, projectData?: any) => {
     // Responsive window sizing and positioning
     let responsiveWidth = width
     let responsiveHeight = height
@@ -85,6 +85,7 @@ export default function Windows95() {
       height: responsiveHeight,
       minimized: false,
       zIndex: nextZIndex,
+      projectData
     }
     setWindows((prev) => [...prev, newWindow])
     setNextZIndex((prev) => prev + 1)
@@ -95,6 +96,16 @@ export default function Windows95() {
     if (app) {
       openWindow(app.title, app.component, app.width, app.height)
     }
+  }
+
+  const openProjectDetails = (project: any) => {
+    openWindow(
+      `Project Details - ${project.name}`,
+      'project-details',
+      700,
+      500,
+      project
+    )
   }
 
   const closeWindow = (id: string) => {
@@ -119,12 +130,14 @@ export default function Windows95() {
     setWindows((prev) => prev.map((w) => (w.id === id ? { ...w, x, y } : w)))
   }
 
-  const renderWindowContent = (component: string) => {
+  const renderWindowContent = (component: string, projectData?: any) => {
     switch (component) {
       case "my-computer":
         return <MyComputer />
       case "projects":
-        return <Projects />
+        return <Projects onOpenProjectDetails={openProjectDetails} />
+      case "project-details":
+        return projectData ? <ProjectDetails project={projectData} /> : <div className="p-4">No project data</div>
       case "whoami":
         return <WhoAmI />
       case "terminal":
@@ -180,7 +193,7 @@ export default function Windows95() {
               onFocus={() => focusWindow(window.id)}
               onMove={(x, y) => updateWindowPosition(window.id, x, y)}
             >
-              {renderWindowContent(window.component)}
+              {renderWindowContent(window.component, window.projectData)}
             </Window>
           )
         })}
