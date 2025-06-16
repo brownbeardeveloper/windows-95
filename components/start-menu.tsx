@@ -53,7 +53,7 @@ export default function StartMenu({ onClose, onOpenApp }: StartMenuProps) {
             <div className="flex items-center space-x-4 md:space-x-3">
               <div className="w-10 h-10 md:w-8 md:h-8 flex items-center justify-center">
                 <div className="w-8 h-8 md:w-6 md:h-6 bg-yellow-400 border border-gray-600 flex items-center justify-center">
-                  <span className="text-base md:text-xs">📁</span>
+                  <span className="text-base md:text-xs">{APPS['projects'].icon}</span>
                 </div>
               </div>
               <span><span className="underline">P</span>rojects</span>
@@ -86,7 +86,7 @@ export default function StartMenu({ onClose, onOpenApp }: StartMenuProps) {
             <div className="flex items-center space-x-4 md:space-x-3">
               <div className="w-10 h-10 md:w-8 md:h-8 flex items-center justify-center">
                 <div className="w-8 h-8 md:w-6 md:h-6 bg-blue-400 border border-gray-600 flex items-center justify-center">
-                  <span className="text-base md:text-xs">📧</span>
+                  <span className="text-base md:text-xs">{APPS['contact'].icon}</span>
                 </div>
               </div>
               <span><span className="underline">C</span>ontact</span>
@@ -100,7 +100,7 @@ export default function StartMenu({ onClose, onOpenApp }: StartMenuProps) {
             <div className="flex items-center space-x-4 md:space-x-3">
               <div className="w-10 h-10 md:w-8 md:h-8 flex items-center justify-center">
                 <div className="w-8 h-8 md:w-6 md:h-6 bg-purple-600 border border-gray-600 flex items-center justify-center">
-                  <span className="text-white text-base md:text-xs">?</span>
+                  <span className="text-white text-base md:text-xs">{APPS['help'].icon}</span>
                 </div>
               </div>
               <span><span className="underline">H</span>elp</span>
@@ -114,7 +114,7 @@ export default function StartMenu({ onClose, onOpenApp }: StartMenuProps) {
             <div className="flex items-center space-x-4 md:space-x-3">
               <div className="w-10 h-10 md:w-8 md:h-8 flex items-center justify-center">
                 <div className="w-8 h-8 md:w-6 md:h-6 bg-gray-400 border border-gray-600 flex items-center justify-center">
-                  <span className="text-base md:text-xs">⚙️</span>
+                  <span className="text-base md:text-xs">{APPS['settings'].icon}</span>
                 </div>
               </div>
               <span><span className="underline">S</span>ettings</span>
@@ -123,7 +123,7 @@ export default function StartMenu({ onClose, onOpenApp }: StartMenuProps) {
 
           <div className="border-t border-gray-500 my-1 mx-2"></div>
 
-          <button className="w-full text-left px-4 md:px-3 py-2 md:py-1 bg-blue-600 text-white flex items-center text-base md:text-sm touch-manipulation">
+          <button className="w-full text-left px-4 md:px-3 py-2 md:py-1 hover:bg-blue-600 hover:text-white flex items-center text-base md:text-sm touch-manipulation">
             <div className="flex items-center space-x-4 md:space-x-3">
               <div className="w-10 h-10 md:w-8 md:h-8 flex items-center justify-center">
                 <div className="w-8 h-8 md:w-6 md:h-6 bg-blue-800 border border-gray-600 flex items-center justify-center">
@@ -167,11 +167,11 @@ export default function StartMenu({ onClose, onOpenApp }: StartMenuProps) {
               >
                 <div className="flex items-center space-x-4 md:space-x-3">
                   <div className="w-10 h-10 md:w-8 md:h-8 flex items-center justify-center">
-                    <div className="w-8 h-8 md:w-6 md:h-6 bg-green-400 border border-gray-600 flex items-center justify-center">
+                    <div className="w-8 h-8 md:w-6 md:h-6 bg-blue-400 border border-gray-600 flex items-center justify-center">
                       <span className="text-base md:text-xs">{APPS['recycle-bin'].icon}</span>
                     </div>
                   </div>
-                  <span>Bin</span>
+                  <span>{APPS['recycle-bin'].title}</span>
                 </div>
               </button>
 
@@ -214,7 +214,7 @@ export default function StartMenu({ onClose, onOpenApp }: StartMenuProps) {
                       <span className="text-base md:text-xs">{APPS['projects'].icon}</span>
                     </div>
                   </div>
-                  <span>All Projects</span>
+                  <span>{APPS['projects'].title}</span>
                 </div>
               </button>
 
@@ -231,7 +231,7 @@ export default function StartMenu({ onClose, onOpenApp }: StartMenuProps) {
                       <span className="text-base md:text-xs">{APPS['whoami'].icon}</span>
                     </div>
                   </div>
-                  <span>About Me</span>
+                  <span>{APPS['whoami'].title}</span>
                 </div>
               </button>
             </div>

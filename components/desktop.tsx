@@ -4,12 +4,13 @@ import { APPS } from "@/lib/apps"
 
 interface DesktopProps {
   onDoubleClick: () => void
+  onClick?: () => void
   onOpenWindow: (title: string, component: string, width?: number, height?: number) => void
   recycleBinHasItems: boolean
   recycleBinCount?: number
 }
 
-export default function Desktop({ onDoubleClick, onOpenWindow, recycleBinHasItems, recycleBinCount = 0 }: DesktopProps) {
+export default function Desktop({ onDoubleClick, onClick, onOpenWindow, recycleBinHasItems, recycleBinCount = 0 }: DesktopProps) {
   // Define which apps appear on desktop
   const desktopApps = [
     'my-computer',
@@ -20,7 +21,12 @@ export default function Desktop({ onDoubleClick, onOpenWindow, recycleBinHasItem
   ]
 
   return (
-    <div className="w-full h-full relative" onDoubleClick={onDoubleClick} style={{ backgroundColor: "#008080" }}>
+    <div
+      className="w-full h-full relative"
+      onDoubleClick={onDoubleClick}
+      onClick={onClick}
+      style={{ backgroundColor: "#008080" }}
+    >
       {/* Desktop Icons */}
       <div className="absolute top-4 left-4 space-y-6 md:space-y-6 space-y-4">
         {desktopApps.map((appId) => {

@@ -11,6 +11,7 @@ interface WindowProps {
   width: number
   height: number
   zIndex: number
+  isActive: boolean
   onClose: () => void
   onMinimize: () => void
   onFocus: () => void
@@ -25,6 +26,7 @@ export default function Window({
   width,
   height,
   zIndex,
+  isActive,
   onClose,
   onMinimize,
   onFocus,
@@ -98,13 +100,19 @@ export default function Window({
         zIndex,
         maxWidth: isMobile ? 'calc(100vw - 20px)' : 'none',
         maxHeight: isMobile ? 'calc(100vh - 80px)' : 'none',
+        ...(isActive ? {} : {
+          background: 'linear-gradient(rgba(240, 240, 240, 0.2), rgba(240, 240, 240, 0.2)), #d1d5db'
+        })
       }}
       onMouseDown={() => onFocus()}
       onTouchStart={handleTouchStart}
     >
       {/* Title Bar */}
       <div
-        className={`title-bar h-6 md:h-5 bg-gradient-to-r from-blue-800 to-blue-600 text-white flex items-center justify-between px-2 md:px-1 ${isMobile ? '' : 'cursor-move'}`}
+        className={`title-bar h-6 md:h-5 ${isActive
+          ? 'bg-gradient-to-r from-blue-800 to-blue-600 text-white'
+          : 'bg-gradient-to-r from-gray-600 to-gray-500 text-gray-200'
+          } flex items-center justify-between px-2 md:px-1 ${isMobile ? '' : 'cursor-move'}`}
         onMouseDown={handleMouseDown}
       >
         <span className="text-sm md:text-xs font-bold truncate">{title}</span>

@@ -147,6 +147,11 @@ export default function Windows95() {
     <div className="h-screen relative overflow-hidden select-none" style={{ backgroundColor: "#008080" }}>
       <Desktop
         onDoubleClick={() => setShowStartMenu(false)}
+        onClick={() => {
+          if (showStartMenu) {
+            setShowStartMenu(false)
+          }
+        }}
         onOpenWindow={openWindow}
         recycleBinHasItems={hasItems}
         recycleBinCount={recycleBinItems.length}
@@ -155,23 +160,30 @@ export default function Windows95() {
       {/* Windows */}
       {windows
         .filter((w) => !w.minimized)
-        .map((window) => (
-          <Window
-            key={window.id}
-            title={window.title}
-            x={window.x}
-            y={window.y}
-            width={window.width}
-            height={window.height}
-            zIndex={window.zIndex}
-            onClose={() => closeWindow(window.id)}
-            onMinimize={() => minimizeWindow(window.id)}
-            onFocus={() => focusWindow(window.id)}
-            onMove={(x, y) => updateWindowPosition(window.id, x, y)}
-          >
-            {renderWindowContent(window.component)}
-          </Window>
-        ))}
+        .map((window) => {
+          const visibleWindows = windows.filter(w => !w.minimized)
+          const maxZIndex = visibleWindows.length > 0 ? Math.max(...visibleWindows.map(w => w.zIndex)) : 0
+          const isActive = window.zIndex === maxZIndex
+
+          return (
+            <Window
+              key={window.id}
+              title={window.title}
+              x={window.x}
+              y={window.y}
+              width={window.width}
+              height={window.height}
+              zIndex={window.zIndex}
+              isActive={isActive}
+              onClose={() => closeWindow(window.id)}
+              onMinimize={() => minimizeWindow(window.id)}
+              onFocus={() => focusWindow(window.id)}
+              onMove={(x, y) => updateWindowPosition(window.id, x, y)}
+            >
+              {renderWindowContent(window.component)}
+            </Window>
+          )
+        })}
 
       {/* Start Menu */}
       {showStartMenu && (
@@ -187,6 +199,7 @@ export default function Windows95() {
       {/* Taskbar */}
       <Taskbar
         onStartClick={() => setShowStartMenu(!showStartMenu)}
+        showStartMenu={showStartMenu}
         windows={windows.map(w => ({
           id: w.id,
           title: w.title,

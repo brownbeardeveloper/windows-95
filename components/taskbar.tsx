@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 
 interface TaskbarProps {
   onStartClick: () => void
+  showStartMenu: boolean
   windows: Array<{
     id: string
     title: string
@@ -13,7 +14,7 @@ interface TaskbarProps {
   onWindowClick: (id: string) => void
 }
 
-export default function Taskbar({ onStartClick, windows, onWindowClick }: TaskbarProps) {
+export default function Taskbar({ onStartClick, showStartMenu, windows, onWindowClick }: TaskbarProps) {
   const [currentTime, setCurrentTime] = useState("")
 
   useEffect(() => {
@@ -42,7 +43,10 @@ export default function Taskbar({ onStartClick, windows, onWindowClick }: Taskba
       {/* Start Button */}
       <button
         onClick={onStartClick}
-        className="h-8 md:h-6 px-3 md:px-2 bg-gray-300 border-2 border-white border-r-gray-400 border-b-gray-400 hover:bg-gray-200 active:border-gray-400 active:border-r-white active:border-b-white flex items-center space-x-1 touch-manipulation"
+        className={`h-8 md:h-6 px-3 md:px-2 bg-gray-300 border-2 flex items-center space-x-1 touch-manipulation ${showStartMenu
+          ? "border-gray-400 border-r-white border-b-white hover:bg-gray-200"
+          : "border-white border-r-gray-400 border-b-gray-400 hover:bg-gray-200 active:border-gray-400 active:border-r-white active:border-b-white"
+          }`}
       >
         <div className="w-5 h-5 md:w-4 md:h-4 bg-red-500 flex items-center justify-center text-white text-sm md:text-xs font-bold">⊞</div>
         <span className="text-sm md:text-xs font-bold">Start</span>
@@ -51,21 +55,29 @@ export default function Taskbar({ onStartClick, windows, onWindowClick }: Taskba
       {/* Window Buttons */}
       <div className="flex-1 flex items-center space-x-1 ml-2 overflow-x-auto">
         {windows.map((window) => {
-          const maxZIndex = Math.max(...windows.map(w => w.zIndex || 0))
-          const isActive = !window.minimized && window.zIndex === maxZIndex
-          const isMinimized = window.minimized
+          // Find the currently active window (highest zIndex among visible windows only)
+          const visibleWindows = windows.filter(w => !w.minimized)
+          let activeWindowId = null
+
+          if (visibleWindows.length > 0) {
+            const activeWindow = visibleWindows.reduce((prev, current) =>
+              (current.zIndex || 0) > (prev.zIndex || 0) ? current : prev
+            )
+            activeWindowId = activeWindow.id
+          }
+
+          // Window button is pressed only if: window is visible AND it's the active window
+          const isActive = !window.minimized && window.id === activeWindowId
 
           return (
             <button
               key={window.id}
               onClick={() => onWindowClick(window.id)}
-              className={`h-8 md:h-6 px-3 text-sm md:text-xs border-2 max-w-32 md:max-w-40 truncate touch-manipulation flex-shrink-0 ${isMinimized
-                ? "bg-gray-200 border-gray-400 border-r-white border-b-white text-gray-600"
-                : isActive
-                  ? "bg-gray-300 border-white border-r-gray-400 border-b-gray-400 text-black font-semibold"
-                  : "bg-gray-200 hover:bg-gray-300 border-gray-300 border-r-gray-400 border-b-gray-400 text-gray-700"
+              className={`h-8 md:h-6 px-3 text-sm md:text-xs border-2 max-w-32 md:max-w-40 truncate touch-manipulation flex-shrink-0 ${isActive
+                ? "bg-gray-300 border-gray-400 border-r-white border-b-white text-black font-semibold"
+                : "bg-gray-200 hover:bg-gray-300 border-white border-r-gray-400 border-b-gray-400 text-gray-700"
                 }`}
-              title={`${window.title}${isMinimized ? ' (minimized)' : isActive ? ' (active)' : ''}`}
+              title={`${window.title}${window.minimized ? ' (minimized)' : isActive ? ' (active)' : ''}`}
             >
               {window.title}
             </button>
