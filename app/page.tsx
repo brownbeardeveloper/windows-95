@@ -12,6 +12,7 @@ import ProjectDetails from "@/components/apps/project-details"
 import WhoAmI from "@/components/apps/whoami"
 import Terminal from "@/components/apps/terminal"
 import RecycleBin from "@/components/apps/recycle-bin"
+import MinesweeperApp from "@/components/apps/minesweeper"
 import { getApp } from "@/lib/apps"
 import { useRecycleBin } from "@/hooks/use-recycle-bin"
 
@@ -151,6 +152,8 @@ export default function Windows95() {
             onDeleteItems={deleteItems}
           />
         )
+      case "minesweeper":
+        return <MinesweeperApp />
       default:
         return <div className="p-4">Window content</div>
     }

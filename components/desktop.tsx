@@ -17,7 +17,8 @@ export default function Desktop({ onDoubleClick, onClick, onOpenWindow, recycleB
     'projects',
     'whoami',
     'terminal',
-    'recycle-bin'
+    'recycle-bin',
+    'minesweeper'
   ]
 
   return (

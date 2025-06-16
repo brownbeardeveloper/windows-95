@@ -182,6 +182,23 @@ export default function StartMenu({ onClose, onOpenApp }: StartMenuProps) {
                   <span className="truncate">{APPS['terminal'].title}</span>
                 </div>
               </button>
+
+              <button
+                onClick={() => {
+                  onOpenApp("minesweeper")
+                  onClose()
+                }}
+                className="w-full text-left px-4 md:px-3 py-2 md:py-1 hover:bg-blue-600 hover:text-white flex items-center text-sm md:text-xs touch-manipulation"
+              >
+                <div className="flex items-center space-x-3 md:space-x-2">
+                  <div className="w-8 h-8 md:w-6 md:h-6 flex items-center justify-center flex-shrink-0">
+                    <div className="w-6 h-6 md:w-4 md:h-4 bg-red-500 border border-gray-600 flex items-center justify-center">
+                      <span className="text-white text-xs md:text-[10px]">{APPS['minesweeper'].icon}</span>
+                    </div>
+                  </div>
+                  <span className="truncate">{APPS['minesweeper'].title}</span>
+                </div>
+              </button>
             </div>
           )}
 

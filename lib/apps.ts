@@ -81,6 +81,15 @@ export const APPS: Record<string, AppDefinition> = {
         width: 450,
         height: 350,
         category: 'system'
+    },
+    'minesweeper': {
+        id: 'minesweeper',
+        title: 'Minefield',
+        component: 'minesweeper',
+        icon: '💣',
+        width: 500,
+        height: 600,
+        category: 'utility'
     }
 }
 
