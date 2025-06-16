@@ -7,9 +7,9 @@ export default function AboutDialog() {
         </div>
       </div>
 
-      <h2 className="text-lg font-bold mb-2">Retro Desktop</h2>
+      <h2 className="text-lg font-bold mb-2">Classic Desktop</h2>
       <p className="text-sm text-gray-600 mb-4">
-        Version 1.0.0
+        Version 1.1
         <br />
         Open Source Project
       </p>

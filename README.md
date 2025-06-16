@@ -1,12 +1,12 @@
-# Retro Desktop
+# Classic Desktop
 
-A Windows 95-inspired desktop environment built with Next.js and React.
+A classic desktop environment inspired by 1990s operating systems, built with Next.js and React.
 
 ## Features
 
 **🎮 Minefield Game**
 - Complete minesweeper implementation with multiple difficulty levels
-- Authentic Windows 95 styling and game mechanics
+- Authentic classic styling and traditional game mechanics
 - Flag system and mine counter
 
 **💻 Terminal with Vim**
@@ -18,7 +18,7 @@ A Windows 95-inspired desktop environment built with Next.js and React.
 **🗑️ Interactive Recycle Bin**
 - Drag and drop file management
 - File recovery system
-- Authentic Windows 95 recycle bin experience
+- Authentic classic desktop experience
 
 **🖥️ Desktop Environment**
 - Start menu with application launcher
@@ -30,7 +30,7 @@ A Windows 95-inspired desktop environment built with Next.js and React.
 
 - **Frontend**: Next.js, React, TypeScript
 - **Styling**: Tailwind CSS
-- **UI**: Custom Windows 95-style components
+- **UI**: Custom classic-style components
 
 ## Live Demo
 
@@ -38,4 +38,4 @@ A Windows 95-inspired desktop environment built with Next.js and React.
 
 ---
 
-*Built as a portfolio project showcasing modern web technologies with retro aesthetics.* 
+*Built as a portfolio project showcasing modern web technologies with classic aesthetics.* 

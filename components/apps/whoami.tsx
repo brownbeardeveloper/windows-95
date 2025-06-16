@@ -113,7 +113,7 @@ export default function WhoAmI() {
             <h2 className="text-sm font-bold border-b border-gray-300 pb-1">Fun Facts</h2>
             <div className="text-xs space-y-1">
               <p>☕ Coffee enthusiast - I run on caffeine and clean code</p>
-              <p>🎮 Retro gaming fan - Hence this Windows 95 portfolio!</p>
+              <p>🎮 Classic gaming fan - Hence this nostalgic portfolio!</p>
               <p>🏔️ Weekend hiker and nature photographer</p>
               <p>🤖 AI/ML hobbyist - Always experimenting with new models</p>
               <p>📚 Continuous learner - Currently exploring Rust and WebAssembly</p>

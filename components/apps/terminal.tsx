@@ -62,7 +62,7 @@ export default function Terminal() {
   const [history, setHistory] = useState<TerminalLine[]>([
     {
       type: "output",
-      content: "Terminal v1.0.0",
+      content: "Terminal v1.1",
     },
     { type: "output", content: "Welcome to the Terminal!" },
     { type: "output", content: "Type 'help' for available commands." },

@@ -26,7 +26,12 @@ export default function Desktop({ onDoubleClick, onClick, onOpenWindow, recycleB
       className="w-full h-full relative"
       onDoubleClick={onDoubleClick}
       onClick={onClick}
-      style={{ backgroundColor: "#008080" }}
+      style={{
+        backgroundImage: "url('./wallpaper.jpg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat"
+      }}
     >
       {/* Desktop Icons */}
       <div className="absolute top-4 left-4 space-y-6 md:space-y-6 space-y-4">
