@@ -366,19 +366,42 @@ export default function Terminal() {
     if (lowerCommand === "echo") {
       const text = args.join(" ")
 
-      // Check if redirecting to file (echo "text" > file.txt)
-      const redirectIndex = args.findIndex(arg => arg === ">")
-      if (redirectIndex !== -1 && redirectIndex < args.length - 1) {
-        const fileName = args[redirectIndex + 1]
-        const textToWrite = args.slice(0, redirectIndex).join(" ")
-        const success = writeFile(getCurrentDirectory(), fileName, textToWrite)
+      // Check if appending to file (echo "text" >> file.txt)
+      const appendIndex = args.findIndex(arg => arg === ">>")
+      if (appendIndex !== -1 && appendIndex < args.length - 1) {
+        const fileName = args[appendIndex + 1]
+        const textToWrite = args.slice(0, appendIndex).join(" ")
+        // Remove quotes if present
+        const cleanText = textToWrite.replace(/^["']|["']$/g, "")
+
+        // Read existing content and append
+        const existingContent = readFile(getCurrentDirectory(), fileName) || ""
+        const newContent = existingContent ? `${existingContent}\n${cleanText}` : cleanText
+        const success = writeFile(getCurrentDirectory(), fileName, newContent)
         if (!success) {
           addOutput([`Could not write to file: ${fileName}`], "error")
         }
         return
       }
 
-      addOutput([text])
+      // Check if redirecting to file (echo "text" > file.txt)
+      const redirectIndex = args.findIndex(arg => arg === ">")
+      if (redirectIndex !== -1 && redirectIndex < args.length - 1) {
+        const fileName = args[redirectIndex + 1]
+        const textToWrite = args.slice(0, redirectIndex).join(" ")
+        // Remove quotes if present
+        const cleanText = textToWrite.replace(/^["']|["']$/g, "")
+        const success = writeFile(getCurrentDirectory(), fileName, cleanText)
+        if (!success) {
+          addOutput([`Could not write to file: ${fileName}`], "error")
+        }
+        return
+      }
+
+      // Just echo the text to terminal
+      // Remove quotes if present for display
+      const cleanText = text.replace(/^["']|["']$/g, "")
+      addOutput([cleanText])
       return
     }
 
