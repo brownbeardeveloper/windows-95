@@ -6,9 +6,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { ScrollArea } from '@/components/ui/scroll-area'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import {
   ExternalLink,
@@ -16,14 +14,11 @@ import {
   Search,
   Filter,
   Calendar,
-  Users,
-  Clock,
   CheckCircle,
   AlertCircle,
   Play,
   Pause,
   Target,
-  Award,
   TrendingUp,
   Code,
   Globe,
@@ -51,11 +46,15 @@ interface Project {
   achievements: string[]
 }
 
-export default function Projects() {
+interface ProjectsProps {
+  onOpenProjectDetails?: (project: Project) => void
+}
+
+export default function Projects({ onOpenProjectDetails }: ProjectsProps) {
   const [projects, setProjects] = useState<Project[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null)
+
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState<string>('all')
   const [typeFilter, setTypeFilter] = useState<string>('all')
@@ -403,7 +402,7 @@ export default function Projects() {
                   <TableRow
                     key={project.id}
                     className="hover:bg-blue-50/50 cursor-pointer transition-colors border-b border-gray-100 h-12"
-                    onClick={() => setSelectedProject(project)}
+                    onClick={() => onOpenProjectDetails?.(project)}
                   >
                     <TableCell className="py-2">
                       <Avatar className="h-6 w-6">
@@ -492,128 +491,7 @@ export default function Projects() {
           </div>
         </div>
 
-        {/* Project Details Sidebar */}
-        {selectedProject && (
-          <div className="w-96 bg-white border-l border-gray-200 flex flex-col">
-            <div className="p-6 border-b border-gray-200">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-3">
-                  <Avatar className="h-12 w-12">
-                    <AvatarFallback className="text-xl bg-gradient-to-br from-blue-500 to-purple-600 text-white">
-                      {selectedProject.icon}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <h2 className="text-xl font-bold text-gray-900">{selectedProject.name}</h2>
-                    <div className="flex items-center gap-2 mt-1">
-                      {getTypeIcon(selectedProject.type)}
-                      <span className="text-sm text-gray-500">{selectedProject.type}</span>
-                    </div>
-                  </div>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setSelectedProject(null)}
-                  className="text-gray-400 hover:text-gray-600"
-                >
-                  ✕
-                </Button>
-              </div>
 
-              <Badge className={`${getStatusColor(selectedProject.status)} border mb-4`}>
-                <div className="flex items-center gap-1">
-                  {getStatusIcon(selectedProject.status)}
-                  <span className="text-sm font-medium">{selectedProject.status}</span>
-                </div>
-              </Badge>
-
-              <p className="text-gray-600 mb-4">{selectedProject.description}</p>
-
-              <div className="flex gap-2">
-                {selectedProject.githubUrl && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="flex-1"
-                    onClick={() => window.open(selectedProject.githubUrl, '_blank')}
-                  >
-                    <Github className="h-4 w-4 mr-2" />
-                    View Code
-                  </Button>
-                )}
-                {selectedProject.url && (
-                  <Button
-                    size="sm"
-                    className="flex-1"
-                    onClick={() => window.open(selectedProject.url, '_blank')}
-                  >
-                    <ExternalLink className="h-4 w-4 mr-2" />
-                    Live Demo
-                  </Button>
-                )}
-              </div>
-            </div>
-
-            <ScrollArea className="flex-1 p-6">
-              <Tabs defaultValue="details" className="w-full">
-                <TabsList className="grid w-full grid-cols-3">
-                  <TabsTrigger value="details">Details</TabsTrigger>
-                  <TabsTrigger value="challenges">Challenges</TabsTrigger>
-                  <TabsTrigger value="achievements">Success</TabsTrigger>
-                </TabsList>
-
-                <TabsContent value="details" className="space-y-4 mt-4">
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2 text-sm">
-                      <Code className="h-4 w-4 text-gray-400" />
-                      <span className="font-medium">Technologies:</span>
-                      <span className="text-gray-600">{selectedProject.tech}</span>
-                    </div>
-
-                    <div className="flex items-center gap-2 text-sm">
-                      <Calendar className="h-4 w-4 text-gray-400" />
-                      <span className="font-medium">Started:</span>
-                      <span className="text-gray-600">{formatDate(selectedProject.startDate)}</span>
-                    </div>
-
-                    {selectedProject.endDate && (
-                      <div className="flex items-center gap-2 text-sm">
-                        <Clock className="h-4 w-4 text-gray-400" />
-                        <span className="font-medium">Completed:</span>
-                        <span className="text-gray-600">{formatDate(selectedProject.endDate)}</span>
-                      </div>
-                    )}
-
-                    <div className="flex items-center gap-2 text-sm">
-                      <Users className="h-4 w-4 text-gray-400" />
-                      <span className="font-medium">Team Size:</span>
-                      <span className="text-gray-600">{selectedProject.teamSize} member{selectedProject.teamSize !== 1 ? 's' : ''}</span>
-                    </div>
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="challenges" className="space-y-3 mt-4">
-                  {selectedProject.challenges.map((challenge, index) => (
-                    <div key={index} className="flex items-start gap-3 p-3 bg-red-50 rounded-lg">
-                      <AlertCircle className="h-4 w-4 text-red-500 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm text-red-800">{challenge}</span>
-                    </div>
-                  ))}
-                </TabsContent>
-
-                <TabsContent value="achievements" className="space-y-3 mt-4">
-                  {selectedProject.achievements.map((achievement, index) => (
-                    <div key={index} className="flex items-start gap-3 p-3 bg-green-50 rounded-lg">
-                      <Award className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm text-green-800">{achievement}</span>
-                    </div>
-                  ))}
-                </TabsContent>
-              </Tabs>
-            </ScrollArea>
-          </div>
-        )}
       </div>
     </div>
   )

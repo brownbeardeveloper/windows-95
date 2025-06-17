@@ -4,6 +4,7 @@ import type React from "react"
 
 import { useState, useRef, useEffect } from "react"
 import { useFileSystem, useDirectory } from "@/hooks/use-file-system"
+import { useIsMobile } from "@/hooks/use-mobile"
 
 interface TerminalLine {
   type: "command" | "output" | "error"
@@ -11,6 +12,8 @@ interface TerminalLine {
 }
 
 export default function Terminal() {
+  const isMobile = useIsMobile()
+
   // Use the file system operations (no global directory state)
   const {
     listDirectory,
@@ -656,6 +659,37 @@ export default function Terminal() {
     }
   }
 
+  const handleMobileEscape = () => {
+    if (vimMode) {
+      const mockEvent = {
+        preventDefault: () => { },
+        key: "Escape"
+      } as React.KeyboardEvent
+      handleVimKeyPress(mockEvent)
+    }
+  }
+
+  const handleMobileCommand = (command: string) => {
+    if (vimMode) {
+      const mockEvent = {
+        preventDefault: () => { },
+        key: command
+      } as React.KeyboardEvent
+      handleVimKeyPress(mockEvent)
+    }
+  }
+
+  const handleMobileVimCommand = (command: string) => {
+    if (vimMode) {
+      setVimCommand(`:${command}`)
+      const mockEvent = {
+        preventDefault: () => { },
+        key: "Enter"
+      } as React.KeyboardEvent
+      handleVimKeyPress(mockEvent)
+    }
+  }
+
   useEffect(() => {
     if (terminalRef.current) {
       terminalRef.current.scrollTop = terminalRef.current.scrollHeight
@@ -685,7 +719,10 @@ export default function Terminal() {
           <div className="mb-2 text-blue-400">-- VIM MODE --</div>
           <div className="mb-2 text-yellow-400">File: {vimFile.name}</div>
           <div className="mb-2 text-gray-400">
-            {vimInsertMode ? "Esc: Command Mode" : "i: Insert | :: Commands"}
+            {isMobile
+              ? (vimInsertMode ? "Tap ESC to exit Insert mode" : "Use buttons on right for commands")
+              : (vimInsertMode ? "Esc: Command Mode" : "i: Insert | :: Commands")
+            }
           </div>
           <div className="border-t border-gray-600 pt-2">
             {vimLines.map((line, lineIndex) => (
@@ -726,6 +763,43 @@ export default function Terminal() {
           onKeyDown={handleVimKeyPress}
           autoFocus
         />
+        {/* Mobile Controls */}
+        {isMobile && (
+          <div className="absolute top-2 right-2 z-10 flex flex-col gap-1">
+            <button
+              onClick={handleMobileEscape}
+              className="bg-gray-800 hover:bg-gray-700 text-white px-2 py-1 rounded text-xs border border-gray-600 shadow-lg"
+              title="Press ESC (Exit Insert Mode / Cancel Command)"
+            >
+              ESC
+            </button>
+            {!vimInsertMode && (
+              <>
+                <button
+                  onClick={() => handleMobileCommand("i")}
+                  className="bg-blue-800 hover:bg-blue-700 text-white px-2 py-1 rounded text-xs border border-blue-600 shadow-lg"
+                  title="Enter Insert Mode"
+                >
+                  INS
+                </button>
+                <button
+                  onClick={() => handleMobileVimCommand("w")}
+                  className="bg-green-800 hover:bg-green-700 text-white px-2 py-1 rounded text-xs border border-green-600 shadow-lg"
+                  title="Save File (:w)"
+                >
+                  SAVE
+                </button>
+                <button
+                  onClick={() => handleMobileVimCommand("q")}
+                  className="bg-red-800 hover:bg-red-700 text-white px-2 py-1 rounded text-xs border border-red-600 shadow-lg"
+                  title="Quit (:q)"
+                >
+                  QUIT
+                </button>
+              </>
+            )}
+          </div>
+        )}
       </div>
     )
   }

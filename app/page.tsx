@@ -136,7 +136,7 @@ function DesktopContent() {
       case "my-computer":
         return <MyComputer onOpenApp={openApp} />
       case "projects":
-        return <Projects />
+        return <Projects onOpenProjectDetails={openProjectDetails} />
       case "project-details":
         return projectData ? <ProjectDetails project={projectData} /> : <div className="p-4">No project data</div>
       case "whoami":

@@ -18,15 +18,18 @@
 
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { SYSTEM_ICONS } from "@/lib/system-icons"
 import { useFileSystem, useDirectory } from "@/hooks/use-file-system"
+import { useIsMobile } from "@/hooks/use-mobile"
 
 interface MyComputerProps {
   onOpenApp?: (appId: string) => void
 }
 
 export default function MyComputer({ onOpenApp }: MyComputerProps) {
+  const isMobile = useIsMobile()
+
   // Use file system operations (no global directory state)
   const { listDirectory, getItem } = useFileSystem()
 
@@ -39,6 +42,7 @@ export default function MyComputer({ onOpenApp }: MyComputerProps) {
 
   const [navigationHistory, setNavigationHistory] = useState<string[][]>([["C:"]])
   const [historyIndex, setHistoryIndex] = useState(0)
+  const [clickTimeouts, setClickTimeouts] = useState<{ [key: string]: NodeJS.Timeout }>({})
 
   const navigate = (path: string[]) => {
     const newHistory = navigationHistory.slice(0, historyIndex + 1)
@@ -79,6 +83,41 @@ export default function MyComputer({ onOpenApp }: MyComputerProps) {
       event.stopPropagation()
     }
 
+    // Mobile: single click to open immediately
+    if (isMobile) {
+      openItem(itemName)
+      return
+    }
+
+    // Desktop: delay single click to allow for double-click detection
+    const existingTimeout = clickTimeouts[itemName]
+    if (existingTimeout) {
+      // If there's already a timeout, this is a double-click - clear it and open immediately
+      clearTimeout(existingTimeout)
+      setClickTimeouts(prev => {
+        const newTimeouts = { ...prev }
+        delete newTimeouts[itemName]
+        return newTimeouts
+      })
+      openItem(itemName)
+    } else {
+      // First click - set timeout for single click action
+      const timeout = setTimeout(() => {
+        // This is a single click - don't open anything (Windows behavior)
+        setClickTimeouts(prev => {
+          const newTimeouts = { ...prev }
+          delete newTimeouts[itemName]
+          return newTimeouts
+        })
+      }, 300)
+
+      setClickTimeouts(prev => ({ ...prev, [itemName]: timeout }))
+    }
+  }
+
+
+
+  const openItem = (itemName: string) => {
     // Check if we're in Program Files and clicking an .exe file
     const isInProgramFiles = currentPath.length === 2 && currentPath[1] === "Program Files"
     const isExeFile = itemName.endsWith(".exe")
@@ -138,6 +177,15 @@ export default function MyComputer({ onOpenApp }: MyComputerProps) {
   const getCurrentPathString = () => {
     return currentPath.join("\\")
   }
+
+  // Cleanup timeouts on unmount
+  useEffect(() => {
+    return () => {
+      Object.values(clickTimeouts).forEach(timeout => {
+        if (timeout) clearTimeout(timeout)
+      })
+    }
+  }, [clickTimeouts])
 
   return (
     <div className="h-full bg-white flex flex-col">
@@ -230,15 +278,12 @@ export default function MyComputer({ onOpenApp }: MyComputerProps) {
                 onClick={(e) => {
                   handleItemClick(item.name, e)
                 }}
-                onDoubleClick={(e) => {
-                  handleItemClick(item.name, e)
-                }}
                 title={
                   item.type === "directory"
-                    ? "Click to open folder"
+                    ? isMobile ? "Tap to open folder" : "Double-click to open folder"
                     : isAppFile
-                      ? "Click to launch application"
-                      : "Click to open file"
+                      ? isMobile ? "Tap to launch application" : "Double-click to launch application"
+                      : isMobile ? "Tap to open file" : "Double-click to open file"
                 }
               >
                 <div className="w-10 h-10 flex items-center justify-center text-2xl mb-2">

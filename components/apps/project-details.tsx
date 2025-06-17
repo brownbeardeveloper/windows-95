@@ -24,7 +24,6 @@ interface ProjectDetailsProps {
 }
 
 export default function ProjectDetails({ project }: ProjectDetailsProps) {
-    const { getCurrentPath } = useFileSystem()
 
     const formatDate = (dateString?: string) => {
         if (!dateString) return 'Ongoing'
@@ -33,18 +32,7 @@ export default function ProjectDetails({ project }: ProjectDetailsProps) {
 
     return (
         <div className="h-full bg-gray-300 flex flex-col font-sans overflow-auto">
-            {/* Header with File System Integration Info */}
-            <div className="bg-blue-600 text-white px-3 py-2 text-sm">
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
-                        <span>📁</span>
-                        <span>Project data loaded from: C:\Documents\projects.json</span>
-                    </div>
-                    <div className="text-xs opacity-75">
-                        File System Integrated
-                    </div>
-                </div>
-            </div>
+
 
             {/* Content */}
             <div className="flex-1 p-4 space-y-4 overflow-auto">
