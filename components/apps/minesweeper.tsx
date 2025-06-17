@@ -263,7 +263,7 @@ export default function MinesweeperApp() {
     };
 
     const getCellClassName = (cell: Cell, r: number, c: number) => {
-        let baseClass = "w-8 h-8 text-sm font-bold flex items-center justify-center border select-none cursor-pointer";
+        let baseClass = "w-6 h-6 sm:w-8 sm:h-8 text-xs sm:text-sm font-bold flex items-center justify-center border select-none cursor-pointer";
 
         // Game over state - exploded mine gets dark red background
         if (gameState === 'lost' && explodedMine && explodedMine.r === r && explodedMine.c === c) {

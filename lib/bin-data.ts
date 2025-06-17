@@ -6,7 +6,7 @@ export interface BinItem {
 }
 
 export const DEFAULT_BIN_ITEMS: BinItem[] = [
-    // Classic vintage programs and files
+    // Classic retro programs and files
     {
         name: "TEXTAPP.EXE",
         icon: "📝",
