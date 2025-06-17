@@ -748,10 +748,10 @@ export default function Terminal() {
           </div>
         </div>
         <div className="border-t border-gray-600 p-2 bg-gray-900">
-          <div className="flex justify-between">
+          <div className="flex justify-between items-center">
             <div className="text-yellow-400">{vimStatus}</div>
             {vimCommand && (
-              <div className="text-white">{vimCommand}</div>
+              <div className="text-white font-bold text-base">{vimCommand}</div>
             )}
           </div>
         </div>
@@ -765,39 +765,14 @@ export default function Terminal() {
         />
         {/* Mobile Controls */}
         {isMobile && (
-          <div className="absolute top-2 right-2 z-10 flex flex-col gap-1">
+          <div className="absolute bottom-14 right-4 z-10 flex flex-col gap-1">
             <button
               onClick={handleMobileEscape}
-              className="bg-gray-800 hover:bg-gray-700 text-white px-2 py-1 rounded text-xs border border-gray-600 shadow-lg"
+              className="bg-gray-800 hover:bg-gray-700 text-white px-3 py-2 rounded text-sm border border-gray-600 shadow-lg"
               title="Press ESC (Exit Insert Mode / Cancel Command)"
             >
               ESC
             </button>
-            {!vimInsertMode && (
-              <>
-                <button
-                  onClick={() => handleMobileCommand("i")}
-                  className="bg-blue-800 hover:bg-blue-700 text-white px-2 py-1 rounded text-xs border border-blue-600 shadow-lg"
-                  title="Enter Insert Mode"
-                >
-                  INS
-                </button>
-                <button
-                  onClick={() => handleMobileVimCommand("w")}
-                  className="bg-green-800 hover:bg-green-700 text-white px-2 py-1 rounded text-xs border border-green-600 shadow-lg"
-                  title="Save File (:w)"
-                >
-                  SAVE
-                </button>
-                <button
-                  onClick={() => handleMobileVimCommand("q")}
-                  className="bg-red-800 hover:bg-red-700 text-white px-2 py-1 rounded text-xs border border-red-600 shadow-lg"
-                  title="Quit (:q)"
-                >
-                  QUIT
-                </button>
-              </>
-            )}
           </div>
         )}
       </div>
