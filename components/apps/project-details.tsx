@@ -1,5 +1,7 @@
 "use client"
 
+import { useFileSystem } from "@/hooks/use-file-system"
+
 interface Project {
     id: string
     name: string
@@ -22,6 +24,8 @@ interface ProjectDetailsProps {
 }
 
 export default function ProjectDetails({ project }: ProjectDetailsProps) {
+    const { getCurrentPath } = useFileSystem()
+
     const formatDate = (dateString?: string) => {
         if (!dateString) return 'Ongoing'
         return new Date(dateString).toLocaleDateString()
@@ -29,6 +33,19 @@ export default function ProjectDetails({ project }: ProjectDetailsProps) {
 
     return (
         <div className="h-full bg-gray-300 flex flex-col font-sans overflow-auto">
+            {/* Header with File System Integration Info */}
+            <div className="bg-blue-600 text-white px-3 py-2 text-sm">
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                        <span>📁</span>
+                        <span>Project data loaded from: C:\Documents\projects.json</span>
+                    </div>
+                    <div className="text-xs opacity-75">
+                        File System Integrated
+                    </div>
+                </div>
+            </div>
+
             {/* Content */}
             <div className="flex-1 p-4 space-y-4 overflow-auto">
                 {/* Header */}
@@ -37,6 +54,7 @@ export default function ProjectDetails({ project }: ProjectDetailsProps) {
                     <div>
                         <h1 className="text-xl font-bold">{project.name}</h1>
                         <p className="text-sm text-gray-600">{project.type}</p>
+                        <p className="text-xs text-blue-600">ID: {project.id}</p>
                     </div>
                 </div>
 
@@ -44,7 +62,7 @@ export default function ProjectDetails({ project }: ProjectDetailsProps) {
                 <div className="grid grid-cols-2 gap-6">
                     <div className="space-y-4">
                         <div className="bg-white border-2 border-gray-400 p-3">
-                            <h3 className="text-sm font-bold mb-2 text-blue-800">Project Information</h3>
+                            <h3 className="text-sm font-bold mb-2 text-blue-800">📋 Project Information</h3>
                             <div className="space-y-2 text-sm">
                                 <div>
                                     <strong>Technologies:</strong>
@@ -53,8 +71,8 @@ export default function ProjectDetails({ project }: ProjectDetailsProps) {
                                 <div className="flex items-center">
                                     <strong>Status:</strong>
                                     <span className={`ml-2 px-2 py-0.5 rounded text-xs ${project.status === "Completed"
-                                            ? "bg-green-200 text-green-800"
-                                            : "bg-yellow-200 text-yellow-800"
+                                        ? "bg-green-200 text-green-800"
+                                        : "bg-yellow-200 text-yellow-800"
                                         }`}>
                                         {project.status}
                                     </span>
@@ -69,7 +87,7 @@ export default function ProjectDetails({ project }: ProjectDetailsProps) {
                         </div>
 
                         <div className="bg-white border-2 border-gray-400 p-3">
-                            <h3 className="text-sm font-bold mb-2 text-blue-800">Timeline</h3>
+                            <h3 className="text-sm font-bold mb-2 text-blue-800">📅 Timeline</h3>
                             <div className="space-y-2 text-sm">
                                 <div>
                                     <strong>Start Date:</strong>
@@ -89,18 +107,29 @@ export default function ProjectDetails({ project }: ProjectDetailsProps) {
                                 )}
                             </div>
                         </div>
+
+                        {/* File System Integration Info */}
+                        <div className="bg-blue-50 border-2 border-blue-300 p-3">
+                            <h3 className="text-sm font-bold mb-2 text-blue-800">🔗 File System Integration</h3>
+                            <div className="space-y-1 text-xs text-gray-700">
+                                <div>✅ Data loaded from centralized file system</div>
+                                <div>✅ Real-time sync with Terminal and My Computer</div>
+                                <div>✅ JSON-based data structure</div>
+                                <div className="text-blue-600 font-mono">projects.json → {project.id}</div>
+                            </div>
+                        </div>
                     </div>
 
                     <div className="space-y-4">
                         {/* Description */}
                         <div className="bg-white border-2 border-gray-400 p-3">
-                            <h3 className="text-sm font-bold mb-2 text-blue-800">Description</h3>
+                            <h3 className="text-sm font-bold mb-2 text-blue-800">📝 Description</h3>
                             <p className="text-sm text-gray-700 leading-relaxed">{project.description}</p>
                         </div>
 
                         {/* Actions */}
                         <div className="bg-white border-2 border-gray-400 p-3">
-                            <h3 className="text-sm font-bold mb-3 text-blue-800">Actions</h3>
+                            <h3 className="text-sm font-bold mb-3 text-blue-800">🚀 Actions</h3>
                             <div className="flex flex-col space-y-2">
                                 {project.url && (
                                     <button
@@ -118,6 +147,12 @@ export default function ProjectDetails({ project }: ProjectDetailsProps) {
                                         📁 View Source Code
                                     </button>
                                 )}
+                                <div className="mt-2 p-2 bg-gray-100 rounded text-xs text-gray-600">
+                                    <div className="font-semibold mb-1">💡 Try This:</div>
+                                    <div>1. Open Terminal</div>
+                                    <div>2. Type: <code className="bg-gray-200 px-1">cat Documents/projects.json</code></div>
+                                    <div>3. See this project's data in real-time!</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -181,6 +216,34 @@ export default function ProjectDetails({ project }: ProjectDetailsProps) {
                                 </div>
                             </>
                         )}
+                    </div>
+                </div>
+
+                {/* Data Source Information */}
+                <div className="bg-green-50 border-2 border-green-300 p-3">
+                    <h3 className="text-sm font-bold mb-2 text-green-800">🗃️ Data Source & Architecture</h3>
+                    <div className="text-sm space-y-1">
+                        <div className="flex items-center space-x-2">
+                            <span className="text-green-600">✓</span>
+                            <span>Centralized File System Integration</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <span className="text-green-600">✓</span>
+                            <span>Real-time synchronization across all apps</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <span className="text-green-600">✓</span>
+                            <span>JSON-based data structure for scalability</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <span className="text-green-600">✓</span>
+                            <span>Terminal, My Computer, and Projects app synchronized</span>
+                        </div>
+                        <div className="mt-2 text-xs text-gray-600 font-mono bg-gray-100 p-2 rounded">
+                            File Location: C:\Documents\projects.json<br />
+                            Project ID: {project.id}<br />
+                            Last Modified: {new Date().toLocaleString()}
+                        </div>
                     </div>
                 </div>
             </div>

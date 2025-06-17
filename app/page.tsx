@@ -15,6 +15,7 @@ import RecycleBin from "@/components/apps/recycle-bin"
 import MinesweeperApp from "@/components/apps/minesweeper"
 import { getApp } from "@/lib/apps"
 import { useRecycleBin } from "@/hooks/use-recycle-bin"
+import { FileSystemProvider } from "@/hooks/use-file-system"
 
 interface WindowType {
   id: string
@@ -134,9 +135,9 @@ export default function ClassicDesktop() {
   const renderWindowContent = (component: string, projectData?: any) => {
     switch (component) {
       case "my-computer":
-        return <MyComputer />
+        return <MyComputer onOpenApp={openApp} />
       case "projects":
-        return <Projects onOpenProjectDetails={openProjectDetails} />
+        return <Projects />
       case "project-details":
         return projectData ? <ProjectDetails project={projectData} /> : <div className="p-4">No project data</div>
       case "whoami":
@@ -160,89 +161,91 @@ export default function ClassicDesktop() {
   }
 
   return (
-    <div className="h-screen relative overflow-hidden select-none" style={{ backgroundColor: "#008080" }}>
-      <Desktop
-        onDoubleClick={() => setShowStartMenu(false)}
-        onClick={() => {
-          if (showStartMenu) {
-            setShowStartMenu(false)
-          }
-        }}
-        onOpenWindow={openWindow}
-        recycleBinHasItems={hasItems}
-        recycleBinCount={recycleBinItems.length}
-      />
+    <FileSystemProvider>
+      <div className="h-screen relative overflow-hidden select-none" style={{ backgroundColor: "#008080" }}>
+        <Desktop
+          onDoubleClick={() => setShowStartMenu(false)}
+          onClick={() => {
+            if (showStartMenu) {
+              setShowStartMenu(false)
+            }
+          }}
+          onOpenWindow={openWindow}
+          recycleBinHasItems={hasItems}
+          recycleBinCount={recycleBinItems.length}
+        />
 
-      {/* Windows */}
-      {windows
-        .filter((w) => !w.minimized)
-        .map((window) => {
-          const visibleWindows = windows.filter(w => !w.minimized)
-          const maxZIndex = visibleWindows.length > 0 ? Math.max(...visibleWindows.map(w => w.zIndex)) : 0
-          const isActive = window.zIndex === maxZIndex
+        {/* Windows */}
+        {windows
+          .filter((w) => !w.minimized)
+          .map((window) => {
+            const visibleWindows = windows.filter(w => !w.minimized)
+            const maxZIndex = visibleWindows.length > 0 ? Math.max(...visibleWindows.map(w => w.zIndex)) : 0
+            const isActive = window.zIndex === maxZIndex
 
-          return (
-            <Window
-              key={window.id}
-              title={window.title}
-              x={window.x}
-              y={window.y}
-              width={window.width}
-              height={window.height}
-              zIndex={window.zIndex}
-              isActive={isActive}
-              onClose={() => closeWindow(window.id)}
-              onMinimize={() => minimizeWindow(window.id)}
-              onFocus={() => focusWindow(window.id)}
-              onMove={(x, y) => updateWindowPosition(window.id, x, y)}
-            >
-              {renderWindowContent(window.component, window.projectData)}
-            </Window>
-          )
-        })}
+            return (
+              <Window
+                key={window.id}
+                title={window.title}
+                x={window.x}
+                y={window.y}
+                width={window.width}
+                height={window.height}
+                zIndex={window.zIndex}
+                isActive={isActive}
+                onClose={() => closeWindow(window.id)}
+                onMinimize={() => minimizeWindow(window.id)}
+                onFocus={() => focusWindow(window.id)}
+                onMove={(x, y) => updateWindowPosition(window.id, x, y)}
+              >
+                {renderWindowContent(window.component, window.projectData)}
+              </Window>
+            )
+          })}
 
-      {/* Start Menu */}
-      {showStartMenu && (
-        <StartMenu
-          onClose={() => setShowStartMenu(false)}
-          onOpenApp={(appId) => {
-            setShowStartMenu(false)
-            openApp(appId)
+        {/* Start Menu */}
+        {showStartMenu && (
+          <StartMenu
+            onClose={() => setShowStartMenu(false)}
+            onOpenApp={(appId) => {
+              setShowStartMenu(false)
+              openApp(appId)
+            }}
+          />
+        )}
+
+        {/* Taskbar */}
+        <Taskbar
+          onStartClick={() => setShowStartMenu(!showStartMenu)}
+          showStartMenu={showStartMenu}
+          windows={windows.map(w => ({
+            id: w.id,
+            title: w.title,
+            minimized: w.minimized,
+            zIndex: w.zIndex
+          }))}
+          onWindowClick={(id) => {
+            const window = windows.find((w) => w.id === id)
+            if (!window) return
+
+            if (window.minimized) {
+              // If window is minimized, restore it
+              restoreWindow(id)
+            } else {
+              // If window is not minimized, check if it's the currently focused window
+              const isCurrentlyFocused = window.zIndex === Math.max(...windows.map(w => w.zIndex))
+
+              if (isCurrentlyFocused) {
+                // If it's already focused, minimize it
+                minimizeWindow(id)
+              } else {
+                // If it's not focused, bring it to front
+                focusWindow(id)
+              }
+            }
           }}
         />
-      )}
-
-      {/* Taskbar */}
-      <Taskbar
-        onStartClick={() => setShowStartMenu(!showStartMenu)}
-        showStartMenu={showStartMenu}
-        windows={windows.map(w => ({
-          id: w.id,
-          title: w.title,
-          minimized: w.minimized,
-          zIndex: w.zIndex
-        }))}
-        onWindowClick={(id) => {
-          const window = windows.find((w) => w.id === id)
-          if (!window) return
-
-          if (window.minimized) {
-            // If window is minimized, restore it
-            restoreWindow(id)
-          } else {
-            // If window is not minimized, check if it's the currently focused window
-            const isCurrentlyFocused = window.zIndex === Math.max(...windows.map(w => w.zIndex))
-
-            if (isCurrentlyFocused) {
-              // If it's already focused, minimize it
-              minimizeWindow(id)
-            } else {
-              // If it's not focused, bring it to front
-              focusWindow(id)
-            }
-          }
-        }}
-      />
-    </div>
+      </div>
+    </FileSystemProvider>
   )
 }
