@@ -1,25 +1,21 @@
 "use client"
 
-import { APPS } from "@/lib/apps"
+import { useFileSystem } from "@/hooks/use-file-system"
 
 interface DesktopProps {
   onDoubleClick: () => void
   onClick?: () => void
   onOpenWindow: (title: string, component: string, width?: number, height?: number) => void
   recycleBinHasItems: boolean
+
   recycleBinCount?: number
 }
 
 export default function Desktop({ onDoubleClick, onClick, onOpenWindow, recycleBinHasItems, recycleBinCount = 0 }: DesktopProps) {
-  // Define which apps appear on desktop
-  const desktopApps = [
-    'my-computer',
-    'projects',
-    'whoami',
-    'terminal',
-    'recycle-bin',
-    'minesweeper'
-  ]
+  const { getDesktopApps, getApp } = useFileSystem()
+
+  // Get desktop apps from file system
+  const desktopApps = getDesktopApps()
 
   return (
     <div
@@ -36,7 +32,7 @@ export default function Desktop({ onDoubleClick, onClick, onOpenWindow, recycleB
       {/* Desktop Icons */}
       <div className="absolute top-4 left-4 space-y-6 md:space-y-6 space-y-4">
         {desktopApps.map((appId) => {
-          const app = APPS[appId]
+          const app = getApp(appId)
           if (!app) return null
 
           return (

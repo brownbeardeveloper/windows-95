@@ -3,7 +3,7 @@
 import type React from "react"
 
 import { useState, useRef, useEffect } from "react"
-import { useFileSystem } from "@/hooks/use-file-system"
+import { useFileSystem, useDirectory } from "@/hooks/use-file-system"
 
 interface TerminalLine {
   type: "command" | "output" | "error"
@@ -11,14 +11,10 @@ interface TerminalLine {
 }
 
 export default function Terminal() {
-  // Use the centralized file system hook
+  // Use the file system operations (no global directory state)
   const {
     listDirectory,
     getItem,
-    navigateTo,
-    getCurrentPath,
-    getCurrentDirectory,
-    setCurrentDirectory,
     createFile,
     createDirectory,
     deleteItem,
@@ -26,14 +22,25 @@ export default function Terminal() {
     readFile
   } = useFileSystem()
 
+  // Each terminal gets its own independent directory navigation
+  const {
+    currentDirectory,
+    navigateTo,
+    getCurrentPath,
+    getCurrentDirectory,
+    setCurrentDirectory,
+    navigateUp,
+    navigateToChild
+  } = useDirectory()
+
   const [history, setHistory] = useState<TerminalLine[]>([
     {
       type: "output",
-      content: "Terminal v2.0 - Synchronized File System",
+      content: "Desktop v1.2 - Terminal",
     },
     { type: "output", content: "Welcome to the Terminal!" },
     { type: "output", content: "Type 'help' for available commands." },
-    { type: "output", content: "File system is now synchronized with My Computer." },
+    { type: "output", content: "Navigate and explore the file system." },
     { type: "output", content: "" },
   ])
   const [currentInput, setCurrentInput] = useState("")

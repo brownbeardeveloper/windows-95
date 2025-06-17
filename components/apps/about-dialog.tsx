@@ -7,17 +7,17 @@ export default function AboutDialog() {
         </div>
       </div>
 
-      <h2 className="text-lg font-bold mb-2">Classic Desktop</h2>
+      <h2 className="text-lg font-bold mb-2">Desktop v1.2</h2>
       <p className="text-sm text-gray-600 mb-4">
-        Version 1.1
+        Version 1.2
         <br />
-        Open Source Project
+        by @brownbeardeveloper
       </p>
 
       <div className="text-xs text-gray-500 mb-4">
         This product is licensed to:
         <br />
-        <strong>Registered User</strong>
+        <strong>Portfolio Viewer</strong>
       </div>
 
       <div className="border-t border-gray-400 pt-4 text-xs text-gray-500">

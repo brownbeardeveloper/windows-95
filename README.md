@@ -1,8 +1,10 @@
-# 🖥️ Desktop Environment
+# 🖥️ Desktop v1.2
 
 ## 🎯 **PRODUCTION READY**
 
 A sophisticated Windows-style desktop environment built with **React 18**, **TypeScript**, and **Next.js 14**. This project demonstrates advanced full-stack development skills with a complete file system implementation.
+
+**Author**: @brownbeardeveloper
 
 ---
 

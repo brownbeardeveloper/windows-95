@@ -12,22 +12,31 @@
  * - Windows-authentic UI/UX
  * - Responsive design
  * 
- * @version 1.0.0 - Boss Ready Edition
+ * @author @brownbeardeveloper
+ * @version Desktop v1.2
  */
 
 "use client"
 
 import { useState } from "react"
 import { SYSTEM_ICONS } from "@/lib/system-icons"
-import { useFileSystem } from "@/hooks/use-file-system"
+import { useFileSystem, useDirectory } from "@/hooks/use-file-system"
 
 interface MyComputerProps {
   onOpenApp?: (appId: string) => void
 }
 
 export default function MyComputer({ onOpenApp }: MyComputerProps) {
-  const { listDirectory, getItem, navigateTo } = useFileSystem()
-  const [currentPath, setCurrentPath] = useState<string[]>(["C:"])
+  // Use file system operations (no global directory state)
+  const { listDirectory, getItem } = useFileSystem()
+
+  // Each My Computer window gets its own independent directory navigation
+  const {
+    currentDirectory: currentPath,
+    navigateTo,
+    navigateUp
+  } = useDirectory(["C:"])
+
   const [navigationHistory, setNavigationHistory] = useState<string[][]>([["C:"]])
   const [historyIndex, setHistoryIndex] = useState(0)
 
@@ -36,7 +45,6 @@ export default function MyComputer({ onOpenApp }: MyComputerProps) {
     newHistory.push(path)
     setNavigationHistory(newHistory)
     setHistoryIndex(newHistory.length - 1)
-    setCurrentPath(path)
     navigateTo(path)
   }
 
@@ -45,7 +53,6 @@ export default function MyComputer({ onOpenApp }: MyComputerProps) {
       const newIndex = historyIndex - 1
       setHistoryIndex(newIndex)
       const newPath = navigationHistory[newIndex]
-      setCurrentPath(newPath)
       navigateTo(newPath)
     }
   }
@@ -55,12 +62,11 @@ export default function MyComputer({ onOpenApp }: MyComputerProps) {
       const newIndex = historyIndex + 1
       setHistoryIndex(newIndex)
       const newPath = navigationHistory[newIndex]
-      setCurrentPath(newPath)
       navigateTo(newPath)
     }
   }
 
-  const goUp = () => {
+  const goUpLevel = () => {
     if (currentPath.length > 1) {
       const parentPath = currentPath.slice(0, -1)
       navigate(parentPath)
@@ -151,32 +157,38 @@ export default function MyComputer({ onOpenApp }: MyComputerProps) {
         <button
           onClick={goBack}
           disabled={historyIndex <= 0}
-          className={`px-2 py-1 text-xs border border-gray-400 ${historyIndex <= 0
+          className={`px-3 py-1 text-sm border border-gray-400 flex items-center space-x-1 ${historyIndex <= 0
             ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
             : 'bg-white hover:bg-gray-100 cursor-pointer'
             }`}
+          title="Go back to previous folder"
         >
-          Back
+          <span className="text-xs">◀</span>
+          <span className="text-xs">Back</span>
         </button>
         <button
           onClick={goForward}
           disabled={historyIndex >= navigationHistory.length - 1}
-          className={`px-2 py-1 text-xs border border-gray-400 ${historyIndex >= navigationHistory.length - 1
+          className={`px-3 py-1 text-sm border border-gray-400 flex items-center space-x-1 ${historyIndex >= navigationHistory.length - 1
             ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
             : 'bg-white hover:bg-gray-100 cursor-pointer'
             }`}
+          title="Go forward to next folder"
         >
-          Forward
+          <span className="text-xs">▶</span>
+          <span className="text-xs">Forward</span>
         </button>
         <button
-          onClick={goUp}
+          onClick={goUpLevel}
           disabled={currentPath.length <= 1}
-          className={`px-2 py-1 text-xs border border-gray-400 ${currentPath.length <= 1
+          className={`px-3 py-1 text-sm border border-gray-400 flex items-center space-x-1 ${currentPath.length <= 1
             ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
             : 'bg-white hover:bg-gray-100 cursor-pointer'
             }`}
+          title="Go up one level"
         >
-          Up
+          <span className="text-xs">▲</span>
+          <span className="text-xs">Up</span>
         </button>
       </div>
 

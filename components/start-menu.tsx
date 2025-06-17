@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from 'react'
-import { APPS } from "@/lib/apps"
+import { useFileSystem } from "@/hooks/use-file-system"
 import { SYSTEM_ICONS } from "@/lib/system-icons"
 
 interface StartMenuProps {
@@ -10,6 +10,7 @@ interface StartMenuProps {
 }
 
 export default function StartMenu({ onClose, onOpenApp }: StartMenuProps) {
+  const { getApp } = useFileSystem()
   const [showProjectsSubmenu, setShowProjectsSubmenu] = useState(false)
   const [showProgramSubmenu, setShowProgramSubmenu] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
@@ -65,7 +66,7 @@ export default function StartMenu({ onClose, onOpenApp }: StartMenuProps) {
             <div className="flex items-center space-x-4 md:space-x-3">
               <div className="w-10 h-10 md:w-8 md:h-8 flex items-center justify-center flex-shrink-0">
                 <div className="w-8 h-8 md:w-6 md:h-6 bg-yellow-400 border border-gray-600 flex items-center justify-center">
-                  <span className="text-base md:text-xs">{APPS['projects'].icon}</span>
+                  <span className="text-base md:text-xs">{getApp('projects')?.icon}</span>
                 </div>
               </div>
               <span className="truncate"><span className="underline">U</span>ser Folder</span>
@@ -86,10 +87,10 @@ export default function StartMenu({ onClose, onOpenApp }: StartMenuProps) {
                 <div className="flex items-center space-x-3 md:space-x-2">
                   <div className="w-8 h-8 md:w-6 md:h-6 flex items-center justify-center flex-shrink-0">
                     <div className="w-6 h-6 md:w-4 md:h-4 bg-yellow-400 border border-gray-600 flex items-center justify-center">
-                      <span className="text-xs md:text-[10px]">{APPS['projects'].icon}</span>
+                      <span className="text-xs md:text-[10px]">{getApp('projects')?.icon}</span>
                     </div>
                   </div>
-                  <span className="truncate">{APPS['projects'].title}</span>
+                  <span className="truncate">{getApp('projects')?.title}</span>
                 </div>
               </button>
 
@@ -103,10 +104,10 @@ export default function StartMenu({ onClose, onOpenApp }: StartMenuProps) {
                 <div className="flex items-center space-x-3 md:space-x-2">
                   <div className="w-8 h-8 md:w-6 md:h-6 flex items-center justify-center flex-shrink-0">
                     <div className="w-6 h-6 md:w-4 md:h-4 bg-blue-400 border border-gray-600 flex items-center justify-center">
-                      <span className="text-xs md:text-[10px]">{APPS['whoami'].icon}</span>
+                      <span className="text-xs md:text-[10px]">{getApp('whoami')?.icon}</span>
                     </div>
                   </div>
-                  <span className="truncate">{APPS['whoami'].title}</span>
+                  <span className="truncate">{getApp('whoami')?.title}</span>
                 </div>
               </button>
             </div>
@@ -142,10 +143,10 @@ export default function StartMenu({ onClose, onOpenApp }: StartMenuProps) {
                 <div className="flex items-center space-x-3 md:space-x-2">
                   <div className="w-8 h-8 md:w-6 md:h-6 flex items-center justify-center flex-shrink-0">
                     <div className="w-6 h-6 md:w-4 md:h-4 bg-gray-500 border border-gray-600 flex items-center justify-center">
-                      <span className="text-xs md:text-[10px]">{APPS['my-computer'].icon}</span>
+                      <span className="text-xs md:text-[10px]">{getApp('my-computer')?.icon}</span>
                     </div>
                   </div>
-                  <span className="truncate">{APPS['my-computer'].title}</span>
+                  <span className="truncate">{getApp('my-computer')?.title}</span>
                 </div>
               </button>
 
@@ -159,10 +160,10 @@ export default function StartMenu({ onClose, onOpenApp }: StartMenuProps) {
                 <div className="flex items-center space-x-3 md:space-x-2">
                   <div className="w-8 h-8 md:w-6 md:h-6 flex items-center justify-center flex-shrink-0">
                     <div className="w-6 h-6 md:w-4 md:h-4 bg-blue-400 border border-gray-600 flex items-center justify-center">
-                      <span className="text-xs md:text-[10px]">{APPS['recycle-bin'].icon}</span>
+                      <span className="text-xs md:text-[10px]">{getApp('recycle-bin')?.icon}</span>
                     </div>
                   </div>
-                  <span className="truncate">{APPS['recycle-bin'].title}</span>
+                  <span className="truncate">{getApp('recycle-bin')?.title}</span>
                 </div>
               </button>
 
@@ -176,10 +177,10 @@ export default function StartMenu({ onClose, onOpenApp }: StartMenuProps) {
                 <div className="flex items-center space-x-3 md:space-x-2">
                   <div className="w-8 h-8 md:w-6 md:h-6 flex items-center justify-center flex-shrink-0">
                     <div className="w-6 h-6 md:w-4 md:h-4 bg-black border border-gray-600 flex items-center justify-center">
-                      <span className="text-white text-xs md:text-[10px]">{APPS['terminal'].icon}</span>
+                      <span className="text-white text-xs md:text-[10px]">{getApp('terminal')?.icon}</span>
                     </div>
                   </div>
-                  <span className="truncate">{APPS['terminal'].title}</span>
+                  <span className="truncate">{getApp('terminal')?.title}</span>
                 </div>
               </button>
 
@@ -193,24 +194,29 @@ export default function StartMenu({ onClose, onOpenApp }: StartMenuProps) {
                 <div className="flex items-center space-x-3 md:space-x-2">
                   <div className="w-8 h-8 md:w-6 md:h-6 flex items-center justify-center flex-shrink-0">
                     <div className="w-6 h-6 md:w-4 md:h-4 bg-red-500 border border-gray-600 flex items-center justify-center">
-                      <span className="text-white text-xs md:text-[10px]">{APPS['minesweeper'].icon}</span>
+                      <span className="text-white text-xs md:text-[10px]">{getApp('minesweeper')?.icon}</span>
                     </div>
                   </div>
-                  <span className="truncate">{APPS['minesweeper'].title}</span>
+                  <span className="truncate">{getApp('minesweeper')?.title}</span>
                 </div>
               </button>
             </div>
           )}
 
-          {/* Direct Menu Items */}
+          {/* Other Menu Items */}
+          <div className="border-t border-gray-400 my-1"></div>
+
           <button
-            onClick={() => onOpenApp("contact")}
+            onClick={() => {
+              onOpenApp("contact")
+              onClose()
+            }}
             className="w-full text-left px-4 md:px-3 py-2 md:py-1 hover:bg-blue-600 hover:text-white flex items-center text-base md:text-sm touch-manipulation"
           >
             <div className="flex items-center space-x-4 md:space-x-3">
               <div className="w-10 h-10 md:w-8 md:h-8 flex items-center justify-center flex-shrink-0">
                 <div className="w-8 h-8 md:w-6 md:h-6 bg-blue-400 border border-gray-600 flex items-center justify-center">
-                  <span className="text-base md:text-xs">{APPS['contact'].icon}</span>
+                  <span className="text-base md:text-xs">{getApp('contact')?.icon}</span>
                 </div>
               </div>
               <span className="truncate"><span className="underline">C</span>ontact</span>
@@ -218,43 +224,38 @@ export default function StartMenu({ onClose, onOpenApp }: StartMenuProps) {
           </button>
 
           <button
-            onClick={() => onOpenApp("help")}
+            onClick={() => {
+              onOpenApp("help")
+              onClose()
+            }}
             className="w-full text-left px-4 md:px-3 py-2 md:py-1 hover:bg-blue-600 hover:text-white flex items-center text-base md:text-sm touch-manipulation"
           >
             <div className="flex items-center space-x-4 md:space-x-3">
               <div className="w-10 h-10 md:w-8 md:h-8 flex items-center justify-center flex-shrink-0">
-                <div className="w-8 h-8 md:w-6 md:h-6 bg-purple-600 border border-gray-600 flex items-center justify-center">
-                  <span className="text-white text-base md:text-xs">{APPS['help'].icon}</span>
+                <div className="w-8 h-8 md:w-6 md:h-6 bg-yellow-400 border border-gray-600 flex items-center justify-center">
+                  <span className="text-white text-base md:text-xs">{getApp('help')?.icon}</span>
                 </div>
               </div>
               <span className="truncate"><span className="underline">H</span>elp</span>
             </div>
           </button>
 
+          <div className="border-t border-gray-400 my-1"></div>
+
           <button
-            onClick={() => onOpenApp("settings")}
+            onClick={() => {
+              onOpenApp("settings")
+              onClose()
+            }}
             className="w-full text-left px-4 md:px-3 py-2 md:py-1 hover:bg-blue-600 hover:text-white flex items-center text-base md:text-sm touch-manipulation"
           >
             <div className="flex items-center space-x-4 md:space-x-3">
               <div className="w-10 h-10 md:w-8 md:h-8 flex items-center justify-center flex-shrink-0">
-                <div className="w-8 h-8 md:w-6 md:h-6 bg-gray-400 border border-gray-600 flex items-center justify-center">
-                  <span className="text-base md:text-xs">{APPS['settings'].icon}</span>
+                <div className="w-8 h-8 md:w-6 md:h-6 bg-gray-500 border border-gray-600 flex items-center justify-center">
+                  <span className="text-base md:text-xs">{getApp('settings')?.icon}</span>
                 </div>
               </div>
               <span className="truncate"><span className="underline">S</span>ettings</span>
-            </div>
-          </button>
-
-          <div className="border-t border-gray-500 my-1 mx-2"></div>
-
-          <button className="w-full text-left px-4 md:px-3 py-2 md:py-1 hover:bg-blue-600 hover:text-white flex items-center text-base md:text-sm touch-manipulation">
-            <div className="flex items-center space-x-4 md:space-x-3">
-              <div className="w-10 h-10 md:w-8 md:h-8 flex items-center justify-center flex-shrink-0">
-                <div className="w-8 h-8 md:w-6 md:h-6 bg-blue-800 border border-gray-600 flex items-center justify-center">
-                  <span className="text-white text-base md:text-xs">{SYSTEM_ICONS.SHUTDOWN}</span>
-                </div>
-              </div>
-              <span className="truncate"><span className="underline">S</span>hut Down</span>
             </div>
           </button>
         </div>
